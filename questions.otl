@@ -1,0 +1,36 @@
+How do we determine the set of available positions that a piece can take on:
+	getPossibleMoves(Piece):
+	getPossibleMoves(twoPieces):
+	Supposing that we could disregard our opponent checking us, determine the set of possible moves
+	For each Movement enum in the possibleMoves array of a Piece, get a set of coordinates disregarding if a piece obstructs you from going further
+		See if there is an assert statement here
+		Then starting from the first coordinate to the final coordinate, check to see if a piece occupies any coordinae
+			Later coordinates are disregarded
+			The coordinate where a block first took place is included in the set we return if the piece on the coordinate belongs to another player
+
+	Smaller Method:
+		Now check for each such coordinate whether, by moving the piece there, there is an opportunity for our opponent to thereafter kill our king
+			Do this by looping through any of the other players and checking to see whether there pieces can attack your king. If there is such a configuration,
+			then we remove this set from taking place
+
+What happens when one piece kills another piece?
+	The piece is removed from the player's list of pieces
+	The piece is removed from the board
+		The board piece is set to be NULL
+	Now update position
+
+How is position updated?
+	The position of the piece itself changes
+	The old position is set to Null on the board
+	The new position is set to contain the piece
+How is check detected?
+	See if at the beginning, without doing anything, the smaller method detects that our
+	king can be killed. See, thereafter, if there a way of moving one piece to get out
+	of this state -- or else we have checkmate.
+
+	If we're not threatened by staying where we are, but we have no available moves for
+	any other piece, then declare stalemate.
+
+
+		
+
