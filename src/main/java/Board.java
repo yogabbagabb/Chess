@@ -37,9 +37,19 @@ public class Board {
         return piecePositions;
     }
 
+    public Piece getPieceAtPosition(Coordinate coor)
+    {
+        return getPieceAtPosition(coor.getPosX(), coor.getPosY());
+    }
+
     public Piece getPieceAtPosition(int xPos, int yPos)
     {
         return piecePositions[xPos][yPos];
+    }
+
+    public void setPieceAtPosition(Coordinate coor, Piece replacementPiece)
+    {
+        setPieceAtPosition(coor.getPosX(), coor.getPosY(), replacementPiece);
     }
 
     public void setPieceAtPosition(int xPos, int yPos, Piece replacementPiece)

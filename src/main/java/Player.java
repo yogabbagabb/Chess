@@ -48,6 +48,11 @@ public class Player {
                 "pieces=" + pieces +
                 ", playerID=" + playerID +
                 ", king=" + king +
-                '}';
+                '}' +"\n";
+    }
+
+    public boolean removePiece(Piece pieceToRemove)
+    {
+        return pieces.remove(pieceToRemove);
     }
 }

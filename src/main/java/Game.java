@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Game {
@@ -141,6 +140,195 @@ public class Game {
         chessBoard = new Board (boardLength, boardWidth, piecePositions);
         players = new ArrayList<>(List.of(playerArray[0], playerArray[1]));
 
+    }
+
+
+    /**
+     * @param aPiece The piece that will be moved; we assume it exists on the board.
+     * @param newPosition The new position where aPiece will be moved to; we assume it is a valid position.
+     *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
+     *                    we assume it is an enemy.
+     */
+    public void  movePiece(Piece aPiece, Coordinate newPosition)
+    {
+        Coordinate curPosition = aPiece.getPosition();
+        chessBoard.setPieceAtPosition(curPosition, null);
+
+        Piece newPosPiece = chessBoard.getPieceAtPosition(newPosition);
+
+        if (newPosPiece != null)
+        {
+           deletePiece(newPosPiece, newPosition);
+        }
+
+        chessBoard.setPieceAtPosition(newPosition, aPiece);
+        aPiece.setPosition(newPosition);
+    }
+
+    /**
+     * @param aPiece The piece that will be removed; we assume it exists on the board.
+     * @param position The position of the piece that will be removed; we assume it exists.
+     *               Delete a piece from the board and from the list of pieces belonging to the player owning the piece.
+     */
+    public void  deletePiece(Piece aPiece, Coordinate position)
+    {
+        if (aPiece == null)
+        {
+            throw new java.lang.Error("You are trying to delete a non-existent piece");
+        }
+
+        Player playerOfPiece = getPlayerOfPiece(aPiece);
+        if (playerOfPiece != null)
+        {
+            chessBoard.setPieceAtPosition(position,null);
+            playerOfPiece.removePiece(aPiece);
+        }
+        else
+        {
+            throw new java.lang.Error("There is no player with the piece you wish to delete!");
+        }
+    }
+
+    /**
+     * @param aPiece The piece whose player we want to return.
+     * @return The player possessing aPiece.
+     * We make no assumption that this piece is actually on the board. If its player id is existent, then the
+     * corresponding player will be returned even if the player doesn't own the piece.
+     */
+    public Player getPlayerOfPiece(Piece aPiece)
+    {
+        // Get the piece's player id
+        int pid = aPiece.getPlayerID();
+        Player playerOfPiece = null;
+
+        for (Player aPlayer : players)
+        {
+            if (aPlayer.getPlayerID() == pid)
+            {
+                playerOfPiece = aPlayer;
+                return playerOfPiece;
+            }
+        }
+
+        return null;
+    }
+
+
+    public boolean isSuicidal(Player aPlayer, int posX, int posY)
+    {
+        return isSuicidal(aPlayer, new Coordinate(posX, posY));
+    }
+
+    /**
+     * @param aPlayer The player who wishes to move a piece.
+     * @param aCoor The coordinate aPlayer wishes to move his or her piece to.
+     * @return Whether the coordinate is occupied by another of aPlayer's pieces (true) or not (false)
+     */
+    public boolean isSuicidal(Player aPlayer, Coordinate aCoor)
+    {
+        Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
+        if (pieceAtCoor == null)
+        {
+            return false;
+        }
+
+        if (pieceAtCoor.getPlayerID() == aPlayer.getPlayerID())
+        {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     *
+     * @param aPiece The piece whose set of moves we will identify.
+     * @param aPlayer The player possessing the piece; we assume aPlayer is accurate.
+     * @param aBoard The board on which we can determine the set of moves we can make
+     * @return A set of coordinates that the piece can move to, not taking into consideration that, by moving to a coordinate,
+     * the opponent(s) can now kill our king.
+     */
+    public Set<Coordinate> getPieceMoves(Piece aPiece, Player aPlayer, Board aBoard)
+    {
+        List <MOVE_PATTERN> movePatterns = aPiece.getMovePatterns();
+        Coordinate pieceCoor = aPiece.getPosition();
+        int pieceX = pieceCoor.getPosX();
+        int pieceY = pieceCoor.getPosY();
+        int boardLength = aBoard.getLength();
+        int boardWidth = aBoard.getWidth();
+
+        HashSet<Coordinate> pieceMoves = new HashSet <Coordinate>();
+        HashSet<Coordinate> pieceMovesToAdd = new HashSet <Coordinate>();
+
+        for (MOVE_PATTERN move : movePatterns)
+        {
+            int curX = pieceX;
+            int curY = pieceY;
+            switch (move)
+            {
+                case NORTH:
+                    if (curY + 1 < boardLength && !isSuicidal(aPlayer, curX, curY + 1))
+                    break;
+                case NORTH_NO_KILL:
+                    break;
+                case SOUTH:
+                    break;
+                case SOUTH_NO_KILL:
+                    break;
+                case DIAGONAL_ON_ENEMY:
+                    break;
+                case TWO_INITIALLY:
+                    break;
+                case UNRESTRICTED_NORTH:
+                    break;
+                case UNRESTRICTED_EAST:
+                    break;
+                case UNRESTRICTED_SOUTH:
+                    break;
+                case UNRESTRICTED_WEST:
+                    break;
+                case UNRESTRICTED_NORTH_EAST:
+                    break;
+                case UNRESTRICTED_NORTH_WEST:
+                    break;
+                case UNRESTRICTED_SOUTH_EAST:
+                    break;
+                case UNRESTRICTED_SOUTH_WEST:
+                    break;
+                case L_SHAPE:
+                    break;
+                case ONE_ANYWHERE:
+                    break;
+            }
+
+        }
+
+        return null;
+
+    }
+
+    /**
+     *
+     * @param aPiece The piece whose set of moves from possibleMoves we will refine.
+     * @param aPlayer The player possessing the piece; we assume aPlayer is accurate.
+     * @param aBoard The board on which we can determine the set of moves we can make.
+     * @param possibleMoves A set of coordinates that the piece can move to, not taking into consideration that, by moving to a coordinate,
+     * the opponent(s) can now kill our king.
+     * @return A set of coordinates that we can move to without being checked
+     */
+    public Set<Coordinate> getSafePieceMoves(Piece aPiece, Player aPlayer, Board aBoard,Set<Coordinate> possibleMoves)
+    {
+        return null;
+    }
+
+
+    /**
+     * @param aBoard The board on which we can determine the set of moves we can make.
+     * @param aPlayer The player who wishes to end his turn having moved in such a way that the board is has the state of aBoard.
+     * @return Whether the configuration is legal: is aPlayer's king not at risk?
+     */
+    public boolean isBoardLayoutSafe(Board aBoard, Player aPlayer)
+    {
+        return false;
     }
 
 
