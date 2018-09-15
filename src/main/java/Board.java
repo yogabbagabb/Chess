@@ -3,25 +3,14 @@ public class Board {
 
     private int length;
     private int width;
-    private Piece [][] piecePositions;
+    private Piece[][] piecePositions;
 
-    public Board(int length, int width, Piece [][] piecePositions)
-    {
+
+    public Board(int length, int width, Piece[][] piecePositions) {
         this.length = length;
         this.width = width;
         this.piecePositions = piecePositions;
     }
-
-//    public Board(int length, int width, int typeOfBoard, boolean whiteBelow)
-//    {
-//        this.length = length;
-//        this.width = width;
-//        if (typeOfBoard == Game.STANDARD_BOARD)
-//        {
-//            initializeStandardBoard(whiteBelow);
-//        }
-//    }
-
 
 
     public void setLength(int length) {
@@ -56,6 +45,31 @@ public class Board {
     public void setPieceAtPosition(int xPos, int yPos, Piece replacementPiece)
     {
         piecePositions[xPos][yPos] = replacementPiece;
+    }
+
+    @Override
+    public String toString() {
+
+        String boardRep = "";
+
+        for (int yIndex = length-1; yIndex >= 0; yIndex--)
+        {
+            for (int xIndex = 0; xIndex < width; xIndex++)
+            {
+                if (piecePositions[xIndex][yIndex] == null)
+                {
+                    boardRep += "X ";
+                }
+                else
+                {
+                    boardRep += piecePositions[xIndex][yIndex].toString();
+                }
+               boardRep += " ";
+            }
+
+            boardRep +=  "\n";
+        }
+        return boardRep;
     }
 
 }

@@ -54,4 +54,37 @@ public abstract class Piece {
     public int hashCode() {
         return Objects.hash(position);
     }
+
+    @Override
+    public String toString() {
+
+        if (this == null)
+        {
+            return "X ";
+        }
+        else if (this instanceof Pawn)
+        {
+            return "P ";
+        }
+        else if (this instanceof Rook)
+        {
+            return "R ";
+        }
+        else if (this instanceof Knight)
+        {
+            return "Kn";
+        }
+        else if (this instanceof Bishop)
+        {
+            return "Bi";
+        }
+        else if (this instanceof Queen)
+        {
+            return "Q ";
+        }
+        else
+        {
+            return "K ";
+        }
+    }
 }

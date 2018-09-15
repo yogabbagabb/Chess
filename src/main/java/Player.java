@@ -5,6 +5,12 @@ public class Player {
     int playerID;
     Piece king;
 
+    public Player(int playerID) {
+        this.pieces = null;
+        this.playerID = playerID;
+        this.king = null;
+    }
+
     public Player(List<Piece> pieces, int playerID, Piece king) {
         this.pieces = pieces;
         this.playerID = playerID;
@@ -36,4 +42,12 @@ public class Player {
     }
 
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "pieces=" + pieces +
+                ", playerID=" + playerID +
+                ", king=" + king +
+                '}';
+    }
 }
