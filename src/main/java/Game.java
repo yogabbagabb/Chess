@@ -249,6 +249,10 @@ public class Game {
     public boolean isEnemyOccupied(Player aPlayer, Coordinate aCoor)
     {
         Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
+        if (pieceAtCoor == null)
+        {
+            return false;
+        }
 
         if (pieceAtCoor.getPlayerID() != aPlayer.getPlayerID())
         {
@@ -295,80 +299,111 @@ public class Game {
             switch (move)
             {
                 case NORTH:
-                    if (curY + 1 < boardLength && !isSuicidal(aPlayer, curX, curY + 1))
+                    if (chessBoard.contains(curX, curY + 1)&& !isSuicidal(aPlayer, curX, curY + 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case NORTH_NO_KILL:
-                    if (curY + 1 < boardLength && isUnoccupied(curX, curY+1))
+                    if (chessBoard.contains(curX, curY + 1) && isUnoccupied(curX, curY+1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case SOUTH:
-                    if (curY - 1 >= 0 && !isSuicidal(aPlayer, curX, curY - 1))
+                    if (chessBoard.contains(curX, curY - 1) && !isSuicidal(aPlayer, curX, curY - 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case SOUTH_NO_KILL:
-                    if (curY - 1 >= 0 && isUnoccupied(curX, curY-1))
+                    if (chessBoard.contains(curX, curY - 1) && isUnoccupied(curX, curY-1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_NORTH:
-                    if (curX + 1 < boardWidth && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    if (chessBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
                     }
-                    if (curX - 1 >= 0 && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    if (chessBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_SOUTH:
-                    if (curX + 1 < boardWidth && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    if (chessBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
                     }
-                    if (curX - 1 >= 0 && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    if (chessBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
                     }
                     break;
                 case TWO_INITIALLY_NORTH:
+                    if (curY == 1 && isUnoccupied(curX, curY+1) && isUnoccupied(curX, curY + 2))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 2));
+                    }
                     break;
                 case TWO_INITIALLY_SOUTH:
+                    if (curY == 6 && isUnoccupied(curX, curY-1) && isUnoccupied(curX, curY - 2))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 2));
+                    }
                     break;
-                case UNRESTRICTED_NORTH:
-                    break;
-                case UNRESTRICTED_EAST:
-                    break;
-                case UNRESTRICTED_SOUTH:
-                    break;
-                case UNRESTRICTED_WEST:
-                    break;
-                case UNRESTRICTED_NORTH_EAST:
-                    break;
-                case UNRESTRICTED_NORTH_WEST:
-                    break;
-                case UNRESTRICTED_SOUTH_EAST:
-                    break;
-                case UNRESTRICTED_SOUTH_WEST:
-                    break;
-                case L_SHAPE:
-                    break;
-                case ONE_ANYWHERE:
+                default:
+                    pieceMovesToAdd.addAll(getPieceMovesAux(aPiece, aPlayer, aBoard, move));
                     break;
             }
 
         }
-
-        return null;
+        return pieceMovesToAdd;
 
     }
+
+    public Set<Coordinate> getPieceMovesAux(Piece aPiece, Player aPlayer, Board aBoard, MOVE_PATTERN move)
+    {
+        Coordinate pieceCoor = aPiece.getPosition();
+        int pieceX = pieceCoor.getPosX();
+        int pieceY = pieceCoor.getPosY();
+        int boardLength = aBoard.getLength();
+        int boardWidth = aBoard.getWidth();
+
+        int curX = pieceX;
+        int curY = pieceY;
+        HashSet<Coordinate> pieceMovesToAdd = new HashSet <Coordinate>();
+        switch (move)
+        {
+            case UNRESTRICTED_NORTH:
+                break;
+            case UNRESTRICTED_EAST:
+                break;
+            case UNRESTRICTED_SOUTH:
+                break;
+            case UNRESTRICTED_WEST:
+                break;
+            case UNRESTRICTED_NORTH_EAST:
+                break;
+            case UNRESTRICTED_NORTH_WEST:
+                break;
+            case UNRESTRICTED_SOUTH_EAST:
+                break;
+            case UNRESTRICTED_SOUTH_WEST:
+                break;
+            case L_SHAPE:
+                break;
+            case ONE_ANYWHERE:
+                break;
+        }
+
+        return pieceMovesToAdd;
+
+    }
+
+
 
     /**
      *

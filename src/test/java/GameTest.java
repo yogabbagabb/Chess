@@ -147,7 +147,12 @@ public class GameTest extends TestCase {
 
     public void testOccupation()
     {
-        
+        Player bottomPlayer = players.get(0);
+        assertTrue(gameInstance.isEnemyOccupied(bottomPlayer, 0,7));
+        assertFalse(gameInstance.isEnemyOccupied(bottomPlayer, 0,1));
+        assertFalse(gameInstance.isEnemyOccupied(bottomPlayer, 0,3));
+        assertTrue(gameInstance.isUnoccupied(0,3));
+        assertFalse(gameInstance.isUnoccupied(0,7));
     }
 
 

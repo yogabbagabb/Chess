@@ -82,4 +82,9 @@ public class Board {
         return boardRep;
     }
 
+    public boolean contains(int posX, int posY)
+    {
+        return (0 <= posX && posX < width && 0 <= posY && posY < length);
+    }
+
 }
