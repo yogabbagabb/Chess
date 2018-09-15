@@ -12,6 +12,18 @@ public class Board {
         this.piecePositions = piecePositions;
     }
 
+//    public Board(int length, int width, int typeOfBoard, boolean whiteBelow)
+//    {
+//        this.length = length;
+//        this.width = width;
+//        if (typeOfBoard == Game.STANDARD_BOARD)
+//        {
+//            initializeStandardBoard(whiteBelow);
+//        }
+//    }
+
+
+
     public void setLength(int length) {
         this.length = length;
     }

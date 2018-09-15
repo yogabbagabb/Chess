@@ -34,3 +34,7 @@ How is check detected?
 
 		
 
+Set up the board
+	Each piece needs to be given a playerID
+Move a piece
+Delete a piece
