@@ -42,6 +42,17 @@ public class Coordinate {
         return Objects.hash(posX, posY);
     }
 
+    /**
+     *
+     * @param posX
+     * @param posY
+     * @return An instantiation of coordinate we can use.
+     */
+    public static Coordinate getCoordinate(int posX, int posY)
+    {
+        return new Coordinate(posX, posY);
+    }
+
 
 
 }

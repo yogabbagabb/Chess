@@ -10,9 +10,10 @@ public class PieceTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        p = new Pawn(new Coordinate(0, 0), 0, MOVE_PATTERN.SOUTH);
-        firstPiece = new Pawn(new Coordinate(0, 0), 0, MOVE_PATTERN.NORTH);
-        secondPiece = new Pawn(new Coordinate(0, 0), 0, MOVE_PATTERN.SOUTH);
+        boolean north = true;
+        p = new Pawn(new Coordinate(0, 0), 0, !north);
+        firstPiece = new Pawn(new Coordinate(0, 0), 0, north);
+        secondPiece = new Pawn(new Coordinate(0, 0), 0, !north);
         thirdPiece = new Rook(new Coordinate(2,4), 1);
         fourthPiece = new King (new Coordinate(5,5), 1);
     }

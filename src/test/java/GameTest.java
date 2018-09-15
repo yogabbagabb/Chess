@@ -127,5 +127,30 @@ public class GameTest extends TestCase {
 
     }
 
+    public void testSuicide()
+    {
+        Player bottomPlayer = players.get(0);
+        boolean isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(0,0));
+        assertTrue(isSuicide);
+
+        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(0,3));
+        assertFalse(isSuicide);
+
+        Piece aPawn = board.getPieceAtPosition(1,1);
+        gameInstance.movePiece(aPawn, new Coordinate(1,3));
+        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(1,3));
+        assertTrue(isSuicide);
+
+        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(1,1));
+        assertFalse(isSuicide);
+    }
+
+    public void testOccupation()
+    {
+        
+    }
+
+
+
 
 }

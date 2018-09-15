@@ -75,7 +75,8 @@ public class Game {
         int [] PawnIdx = {1, 6};
         int [] playerIDs = {bottomPlayerID, topPlayerID};
         Player [] playerArray = {new Player (bottomPlayerID), new Player (topPlayerID)};
-        MOVE_PATTERN [] pawnDir = {MOVE_PATTERN.NORTH, MOVE_PATTERN.SOUTH};
+        boolean north = true;
+        boolean [] pawnDir = {north, !north};
         
         List <Piece> currentPiecesList = new ArrayList <> ();
         Piece aPiece;
@@ -239,6 +240,34 @@ public class Game {
 
         return false;
     }
+
+    public boolean isEnemyOccupied(Player aPlayer, int posX, int posY)
+    {
+       return isEnemyOccupied(aPlayer, Coordinate.getCoordinate(posX, posY));
+    }
+
+    public boolean isEnemyOccupied(Player aPlayer, Coordinate aCoor)
+    {
+        Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
+
+        if (pieceAtCoor.getPlayerID() != aPlayer.getPlayerID())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isUnoccupied(int posX, int posY)
+    {
+        return isUnoccupied(Coordinate.getCoordinate(posX, posY));
+    }
+
+    public boolean isUnoccupied(Coordinate aCoor)
+    {
+       return chessBoard.getPieceAtPosition(aCoor) == null;
+    }
+
     /**
      *
      * @param aPiece The piece whose set of moves we will identify.
@@ -267,16 +296,51 @@ public class Game {
             {
                 case NORTH:
                     if (curY + 1 < boardLength && !isSuicidal(aPlayer, curX, curY + 1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
+                    }
                     break;
                 case NORTH_NO_KILL:
+                    if (curY + 1 < boardLength && isUnoccupied(curX, curY+1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
+                    }
                     break;
                 case SOUTH:
+                    if (curY - 1 >= 0 && !isSuicidal(aPlayer, curX, curY - 1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
+                    }
                     break;
                 case SOUTH_NO_KILL:
+                    if (curY - 1 >= 0 && isUnoccupied(curX, curY-1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
+                    }
                     break;
-                case DIAGONAL_ON_ENEMY:
+                case DIAGONAL_ON_ENEMY_NORTH:
+                    if (curX + 1 < boardWidth && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
+                    }
+                    if (curX - 1 >= 0 && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
+                    }
                     break;
-                case TWO_INITIALLY:
+                case DIAGONAL_ON_ENEMY_SOUTH:
+                    if (curX + 1 < boardWidth && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
+                    }
+                    if (curX - 1 >= 0 && curY + 1 < boardLength && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    {
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
+                    }
+                    break;
+                case TWO_INITIALLY_NORTH:
+                    break;
+                case TWO_INITIALLY_SOUTH:
                     break;
                 case UNRESTRICTED_NORTH:
                     break;

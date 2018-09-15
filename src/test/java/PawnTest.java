@@ -8,7 +8,8 @@ public class PawnTest extends TestCase {
     Pawn p;
     public void setUp() throws Exception {
         super.setUp();
-        p = new Pawn (new Coordinate(1,1), 0, MOVE_PATTERN.SOUTH);
+        boolean north = true;
+        p = new Pawn (new Coordinate(1,1), 0, !north);
     }
 
     public void testGetter()
@@ -22,7 +23,7 @@ public class PawnTest extends TestCase {
         
         List<MOVE_PATTERN> patterns = p.getMovePatterns();
         System.out.println(patterns.toString());
-        assertTrue(patterns.toString().equals("[SOUTH, DIAGONAL_ON_ENEMY, TWO_INITIALLY]"));
+        assertTrue(patterns.toString().equals("[SOUTH_NO_KILL, DIAGONAL_ON_ENEMY_SOUTH, TWO_INITIALLY_SOUTH]"));
     }
 
     public void testSetter()
