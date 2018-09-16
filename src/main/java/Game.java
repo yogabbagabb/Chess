@@ -77,7 +77,7 @@ public class Game {
         Player [] playerArray = {new Player (bottomPlayerID), new Player (topPlayerID)};
         boolean north = true;
         boolean [] pawnDir = {north, !north};
-        
+
         List <Piece> currentPiecesList = new ArrayList <> ();
         Piece aPiece;
 
@@ -218,12 +218,12 @@ public class Game {
      *
      * Set a piece at a position, update its coordinate to be at the new position and add the piece
      * to its owner's (player's) list of pieces.
-     * @param aBoard The board on which we will place our piece.
+     * @param aBoard The board on which we will place our piece; the piece is nowhere on the board.
      * @param xPos X coordinate of piece.
      * @param yPos Y coordinate of piece.
      * @param replacementPiece The piece that will occupy xPos, yPos.
      */
-    public void setPieceAtPosition(Board aBoard, int xPos, int yPos, Piece replacementPiece)
+    public void putPieceOnBoard(Board aBoard, int xPos, int yPos, Piece replacementPiece)
     {
         aBoard.setPieceAtPosition(xPos, yPos, replacementPiece);
 
@@ -318,22 +318,10 @@ public class Game {
         {
             switch (move)
             {
-                case NORTH:
-                    if (aBoard.contains(curX, curY + 1)&& !isSuicidal(aBoard, aPlayer, curX, curY + 1))
-                    {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
-                    }
-                    break;
                 case NORTH_NO_KILL:
                     if (aBoard.contains(curX, curY + 1) && isUnoccupied(aBoard, curX, curY+1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
-                    }
-                    break;
-                case SOUTH:
-                    if (aBoard.contains(curX, curY - 1) && !isSuicidal(aBoard, aPlayer, curX, curY - 1))
-                    {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case SOUTH_NO_KILL:
@@ -582,7 +570,7 @@ public class Game {
                 }
 
                 movePiece(aBoard, aPiece, oldLoc);
-                setPieceAtPosition(aBoard, possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
+                putPieceOnBoard(aBoard, possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }
             else
             {
@@ -618,8 +606,16 @@ public class Game {
     public boolean isCheckmated(Player aPlayer, Board aBoard)
     {
         Set<Coordinate> allSafeMoves = getAllSafePieceMoves(aPlayer, aBoard);
-        return allSafeMoves.isEmpty();
+        return isChecked(aBoard, aPlayer) && allSafeMoves.isEmpty();
     }
+
+    public boolean isStalemated(Player aPlayer, Board aBoard)
+    {
+        Set<Coordinate> allSafeMoves = getAllSafePieceMoves(aPlayer, aBoard);
+        return !isChecked(aBoard, aPlayer) && allSafeMoves.isEmpty();
+
+    }
+
 
 
 

@@ -25,8 +25,8 @@ public class CheckTest extends TestCase {
     public void testIsBoardLayoutSafe_basic() {
         assertTrue(gameInstance.isBoardLayoutSafe(board, players.get(0)));
 
-        gameInstance.setPieceAtPosition(board, 4, 4, new Queen (Coordinate.getCoordinate(4, 4),1));
-        gameInstance.setPieceAtPosition(board, 4, 1, null);
+        gameInstance.putPieceOnBoard(board, 4, 4, new Queen (Coordinate.getCoordinate(4, 4),1));
+        gameInstance.putPieceOnBoard(board, 4, 1, null);
         assertFalse(gameInstance.isBoardLayoutSafe(board, players.get(0)));
     }
 

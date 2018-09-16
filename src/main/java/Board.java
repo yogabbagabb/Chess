@@ -13,24 +13,24 @@ public class Board {
     }
 
 
-    /**
-     * @param anotherBoard The board whose fields we wish to copy to a new board
-     *                     The field's references are copied. Ie this is a shallow copy constructor.
-     */
-    public Board(Board anotherBoard)
-    {
-        length = anotherBoard.length;
-        width = anotherBoard.width;
-        piecePositions = new Piece[width][length];
-
-        for (int widthIdx = 0; widthIdx < width; ++widthIdx)
-        {
-            for (int lengthIdx = 0; lengthIdx < length; ++length)
-            {
-               piecePositions[widthIdx][lengthIdx] = anotherBoard.getPieceAtPosition(widthIdx,lengthIdx);
-            }
-        }
-    }
+//    /**
+//     * @param anotherBoard The board whose fields we wish to copy to a new board
+//     *                     The field's references are copied. Ie this is a shallow copy constructor.
+//     */
+//    public Board(Board anotherBoard)
+//    {
+//        length = anotherBoard.length;
+//        width = anotherBoard.width;
+//        piecePositions = new Piece[width][length];
+//
+//        for (int widthIdx = 0; widthIdx < width; ++widthIdx)
+//        {
+//            for (int lengthIdx = 0; lengthIdx < length; ++length)
+//            {
+//               piecePositions[widthIdx][lengthIdx] = anotherBoard.getPieceAtPosition(widthIdx,lengthIdx);
+//            }
+//        }
+//    }
 
 
     public void setLength(int length) {

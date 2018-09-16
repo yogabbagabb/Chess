@@ -37,9 +37,9 @@ public class PawnTest extends TestCase {
         p.setPlayerID(3);
         assertTrue(p.getPlayerID() == 3);
 
-        p.setMovePatterns(new ArrayList<>(List.of(MOVE_PATTERN.SOUTH)));
+        p.setMovePatterns(new ArrayList<>(List.of(MOVE_PATTERN.SOUTH_NO_KILL)));
         List<MOVE_PATTERN> patterns = p.getMovePatterns();
-        assertTrue(patterns.toString().equals("[SOUTH]"));
+        assertTrue(patterns.toString().equals("[SOUTH_NO_KILL]"));
 
         // Add another line for testing setPosition
         p.setPosition(new Coordinate (4,4));
