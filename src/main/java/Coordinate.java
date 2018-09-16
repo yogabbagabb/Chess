@@ -53,6 +53,14 @@ public class Coordinate {
         return new Coordinate(posX, posY);
     }
 
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "posX=" + posX +
+                ", posY=" + posY +
+                '}';
+    }
+
 
 
 }

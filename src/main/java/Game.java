@@ -241,6 +241,10 @@ public class Game {
         return false;
     }
 
+    public boolean isValidAndEnemyOccupied(Board board, Player aPlayer, int posX, int posY)
+    {
+        return board.contains(posX, posY) && isEnemyOccupied(aPlayer, posX, posY);
+    }
     public boolean isEnemyOccupied(Player aPlayer, int posX, int posY)
     {
        return isEnemyOccupied(aPlayer, Coordinate.getCoordinate(posX, posY));
@@ -289,8 +293,8 @@ public class Game {
         int boardLength = aBoard.getLength();
         int boardWidth = aBoard.getWidth();
 
-        HashSet<Coordinate> pieceMoves = new HashSet <Coordinate>();
-        HashSet<Coordinate> pieceMovesToAdd = new HashSet <Coordinate>();
+        LinkedHashSet<Coordinate> pieceMoves = new LinkedHashSet <Coordinate>();
+        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <Coordinate>();
 
         for (MOVE_PATTERN move : movePatterns)
         {
@@ -299,47 +303,47 @@ public class Game {
             switch (move)
             {
                 case NORTH:
-                    if (chessBoard.contains(curX, curY + 1)&& !isSuicidal(aPlayer, curX, curY + 1))
+                    if (aBoard.contains(curX, curY + 1)&& !isSuicidal(aPlayer, curX, curY + 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case NORTH_NO_KILL:
-                    if (chessBoard.contains(curX, curY + 1) && isUnoccupied(curX, curY+1))
+                    if (aBoard.contains(curX, curY + 1) && isUnoccupied(curX, curY+1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case SOUTH:
-                    if (chessBoard.contains(curX, curY - 1) && !isSuicidal(aPlayer, curX, curY - 1))
+                    if (aBoard.contains(curX, curY - 1) && !isSuicidal(aPlayer, curX, curY - 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case SOUTH_NO_KILL:
-                    if (chessBoard.contains(curX, curY - 1) && isUnoccupied(curX, curY-1))
+                    if (aBoard.contains(curX, curY - 1) && isUnoccupied(curX, curY-1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_NORTH:
-                    if (chessBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    if (aBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
                     }
-                    if (chessBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    if (aBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_SOUTH:
-                    if (chessBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    if (aBoard.contains(curX - 1, curY - 1) && isEnemyOccupied(aPlayer, curX - 1, curY - 1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY - 1));
                     }
-                    if (chessBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    if (aBoard.contains(curX + 1, curY - 1) && isEnemyOccupied(aPlayer, curX + 1, curY - 1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
+                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY - 1));
                     }
                     break;
                 case TWO_INITIALLY_NORTH:
@@ -374,24 +378,107 @@ public class Game {
 
         int curX = pieceX;
         int curY = pieceY;
-        HashSet<Coordinate> pieceMovesToAdd = new HashSet <Coordinate>();
+        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <Coordinate>();
+        int vertCounter = 1;
+        int horCounter = 1;
         switch (move)
         {
             case UNRESTRICTED_NORTH:
+                for (vertCounter = 1;
+                     vertCounter < boardLength && chessBoard.contains(curX, curY + vertCounter) &&
+                     isUnoccupied(curX, curY + vertCounter) ;++vertCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
+                }
+
+                if(isValidAndEnemyOccupied(aBoard,aPlayer, curX, curY + vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
+                }
                 break;
             case UNRESTRICTED_EAST:
+                for (horCounter = 1;
+                     horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY) &&
+                     isUnoccupied(curX + horCounter, curY);++horCounter){
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX + horCounter, curY))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
+                }
                 break;
             case UNRESTRICTED_SOUTH:
+                for (vertCounter = 1;
+                     vertCounter < boardLength && chessBoard.contains(curX, curY - vertCounter) &&
+                     isUnoccupied(curX, curY - vertCounter); ++vertCounter){
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX, curY - vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
+                }
                 break;
             case UNRESTRICTED_WEST:
+                for (horCounter = 1;
+                     horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY) &&
+                     isUnoccupied(curX - horCounter, curY);++horCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX - horCounter, curY))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
+                }
                 break;
+
             case UNRESTRICTED_NORTH_EAST:
+                for (vertCounter = 1, horCounter = 1;
+                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY + vertCounter) &&
+                     isUnoccupied(curX + horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX + horCounter, curY + vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
+                }
                 break;
+
             case UNRESTRICTED_NORTH_WEST:
+                for (vertCounter = 1, horCounter = 1;
+                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY + vertCounter) &&
+                             isUnoccupied(curX - horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX - horCounter, curY + vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
+                }
                 break;
             case UNRESTRICTED_SOUTH_EAST:
+                for (vertCounter = 1, horCounter = 1;
+                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY - vertCounter) &&
+                             isUnoccupied(curX + horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX + horCounter, curY - vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
+                }
                 break;
             case UNRESTRICTED_SOUTH_WEST:
+                for (vertCounter = 1, horCounter = 1;
+                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY - vertCounter) &&
+                             isUnoccupied(curX - horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
+                }
+                if (isValidAndEnemyOccupied(aBoard,aPlayer, curX - horCounter, curY - vertCounter))
+                {
+                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
+                }
                 break;
             case L_SHAPE:
                 break;
