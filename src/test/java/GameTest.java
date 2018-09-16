@@ -4,9 +4,9 @@ import java.util.List;
 
 public class GameTest extends TestCase {
 
-    Game gameInstance;
-    Board board;
-    List<Player> players;
+    private Game gameInstance;
+    private Board board;
+    private List<Player> players;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -35,7 +35,7 @@ public class GameTest extends TestCase {
     public void testMovementDeletion()
     {
         Piece aPawn = board.getPieceAtPosition(1,1);
-        gameInstance.movePiece(aPawn, new Coordinate(1,3));
+        gameInstance.movePiece(board, aPawn, new Coordinate(1,3));
         Piece shouldBeNull = board.getPieceAtPosition(1,1);
         assertNull(shouldBeNull);
 
@@ -50,7 +50,7 @@ public class GameTest extends TestCase {
         assertEquals(board.toString(), expectedVisual);
         System.out.println(board.toString());
 
-        gameInstance.movePiece(aPawn, new Coordinate(3,3));
+        gameInstance.movePiece(board, aPawn, new Coordinate(3,3));
         shouldBeNull = board.getPieceAtPosition(1,3);
         assertNull(shouldBeNull);
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
@@ -64,7 +64,7 @@ public class GameTest extends TestCase {
         assertEquals(board.toString(), expectedVisual);
         System.out.println(board.toString());
 
-        gameInstance.movePiece(aPawn, new Coordinate(3,0));
+        gameInstance.movePiece(board, aPawn, new Coordinate(3,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
                 "P  P  P  P  P  P  P  P  \n" +
                 "X  X  X  X  X  X  X  X  \n" +
@@ -76,7 +76,7 @@ public class GameTest extends TestCase {
         assertEquals(board.toString(), expectedVisual);
         System.out.println(board.toString());
 
-        gameInstance.movePiece(aPawn, new Coordinate(4,0));
+        gameInstance.movePiece(board, aPawn, new Coordinate(4,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
                 "P  P  P  P  P  P  P  P  \n" +
                 "X  X  X  X  X  X  X  X  \n" +
@@ -88,7 +88,7 @@ public class GameTest extends TestCase {
         assertEquals(board.toString(), expectedVisual);
         System.out.println(board.toString());
 
-        gameInstance.movePiece(aPawn, new Coordinate(5,0));
+        gameInstance.movePiece(board, aPawn, new Coordinate(5,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
                 "P  P  P  P  P  P  P  P  \n" +
                 "X  X  X  X  X  X  X  X  \n" +
@@ -106,7 +106,7 @@ public class GameTest extends TestCase {
         Piece shouldNotBeNull = board.getPieceAtPosition(5, 0);
         assertNotNull(shouldNotBeNull);
 
-        gameInstance.movePiece(aPawn, new Coordinate(5,7));
+        gameInstance.movePiece(board, aPawn, new Coordinate(5,7));
         expectedVisual = "R  Kn Bi Q  K  P  Kn R  \n" +
                 "P  P  P  P  P  P  P  P  \n" +
                 "X  X  X  X  X  X  X  X  \n" +
@@ -137,7 +137,7 @@ public class GameTest extends TestCase {
         assertFalse(isSuicide);
 
         Piece aPawn = board.getPieceAtPosition(1,1);
-        gameInstance.movePiece(aPawn, new Coordinate(1,3));
+        gameInstance.movePiece(board, aPawn, new Coordinate(1,3));
         isSuicide = gameInstance.isSuicidal(board,bottomPlayer, Coordinate.getCoordinate(1,3));
         assertTrue(isSuicide);
 

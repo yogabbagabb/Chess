@@ -150,19 +150,19 @@ public class Game {
      *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
      *                    we assume it is an enemy.
      */
-    public void  movePiece(Piece aPiece, Coordinate newPosition)
+    public void  movePiece(Board aBoard, Piece aPiece, Coordinate newPosition)
     {
         Coordinate curPosition = aPiece.getPosition();
-        chessBoard.setPieceAtPosition(curPosition, null);
+        aBoard.setPieceAtPosition(curPosition, null);
 
-        Piece newPosPiece = chessBoard.getPieceAtPosition(newPosition);
+        Piece newPosPiece = aBoard.getPieceAtPosition(newPosition);
 
         if (newPosPiece != null)
         {
-           deletePiece(newPosPiece, newPosition);
+           deletePiece(aBoard, newPosPiece, newPosition);
         }
 
-        chessBoard.setPieceAtPosition(newPosition, aPiece);
+        aBoard.setPieceAtPosition(newPosition, aPiece);
         aPiece.setPosition(newPosition);
     }
 
@@ -171,7 +171,7 @@ public class Game {
      * @param position The position of the piece that will be removed; we assume it exists.
      *               Delete a piece from the board and from the list of pieces belonging to the player owning the piece.
      */
-    private void deletePiece(Piece aPiece, Coordinate position)
+    private void deletePiece(Board aBoard, Piece aPiece, Coordinate position)
     {
         if (aPiece == null)
         {
@@ -181,7 +181,7 @@ public class Game {
         Player playerOfPiece = getPlayerOfPiece(aPiece);
         if (playerOfPiece != null)
         {
-            chessBoard.setPieceAtPosition(position,null);
+            aBoard.setPieceAtPosition(position,null);
             playerOfPiece.removePiece(aPiece);
         }
         else
@@ -212,6 +212,16 @@ public class Game {
         }
 
         return null;
+    }
+
+    public void setPieceAtPosition(Board aBoard, int xPos, int yPos, Piece replacementPiece)
+    {
+        aBoard.setPieceAtPosition(xPos, yPos, replacementPiece);
+        if (replacementPiece  != null)
+        {
+            Player playerOfPiece = getPlayerOfPiece(replacementPiece);
+            playerOfPiece.addPiece(replacementPiece);
+        }
     }
 
 
@@ -378,7 +388,7 @@ public class Game {
         {
             case UNRESTRICTED_NORTH:
                 for (vertCounter = 1;
-                     vertCounter < boardLength && chessBoard.contains(curX, curY + vertCounter) &&
+                     vertCounter < boardLength && aBoard.contains(curX, curY + vertCounter) &&
                      isUnoccupied(aBoard, curX, curY + vertCounter) ;++vertCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
@@ -391,7 +401,7 @@ public class Game {
                 break;
             case UNRESTRICTED_EAST:
                 for (horCounter = 1;
-                     horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY) &&
+                     horCounter < boardWidth && aBoard.contains(curX + horCounter, curY) &&
                      isUnoccupied(aBoard, curX + horCounter, curY);++horCounter){
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
                 }
@@ -402,7 +412,7 @@ public class Game {
                 break;
             case UNRESTRICTED_SOUTH:
                 for (vertCounter = 1;
-                     vertCounter < boardLength && chessBoard.contains(curX, curY - vertCounter) &&
+                     vertCounter < boardLength && aBoard.contains(curX, curY - vertCounter) &&
                      isUnoccupied(aBoard, curX, curY - vertCounter); ++vertCounter){
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
                 }
@@ -413,7 +423,7 @@ public class Game {
                 break;
             case UNRESTRICTED_WEST:
                 for (horCounter = 1;
-                     horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY) &&
+                     horCounter < boardWidth && aBoard.contains(curX - horCounter, curY) &&
                      isUnoccupied(aBoard, curX - horCounter, curY);++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
@@ -426,7 +436,7 @@ public class Game {
 
             case UNRESTRICTED_NORTH_EAST:
                 for (vertCounter = 1, horCounter = 1;
-                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY + vertCounter) &&
+                     vertCounter < boardLength && horCounter < boardWidth && aBoard.contains(curX + horCounter, curY + vertCounter) &&
                      isUnoccupied(aBoard, curX + horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
@@ -439,7 +449,7 @@ public class Game {
 
             case UNRESTRICTED_NORTH_WEST:
                 for (vertCounter = 1, horCounter = 1;
-                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY + vertCounter) &&
+                     vertCounter < boardLength && horCounter < boardWidth && aBoard.contains(curX - horCounter, curY + vertCounter) &&
                              isUnoccupied(aBoard, curX - horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
@@ -451,7 +461,7 @@ public class Game {
                 break;
             case UNRESTRICTED_SOUTH_EAST:
                 for (vertCounter = 1, horCounter = 1;
-                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY - vertCounter) &&
+                     vertCounter < boardLength && horCounter < boardWidth && aBoard.contains(curX + horCounter, curY - vertCounter) &&
                              isUnoccupied(aBoard, curX + horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
@@ -463,7 +473,7 @@ public class Game {
                 break;
             case UNRESTRICTED_SOUTH_WEST:
                 for (vertCounter = 1, horCounter = 1;
-                     vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY - vertCounter) &&
+                     vertCounter < boardLength && horCounter < boardWidth && aBoard.contains(curX - horCounter, curY - vertCounter) &&
                              isUnoccupied(aBoard, curX - horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
@@ -549,7 +559,31 @@ public class Game {
      */
     public boolean isBoardLayoutSafe(Board aBoard, Player aPlayer)
     {
-        return false;
+        Piece aPlayerKing = aPlayer.getKing();
+        Coordinate coorOfKing = aPlayerKing.getPosition();
+        Set <Coordinate> accessibleCoor = new LinkedHashSet<>();
+        for (Player playerInst: players)
+        {
+            if (playerInst.equals(aPlayer))
+            {
+               continue;
+            }
+
+            List <Piece> playerInstPieces = playerInst.getPieces();
+            for (Piece aPiece: playerInstPieces)
+            {
+               accessibleCoor.addAll(getPieceMoves(aPiece, playerInst, aBoard));
+            }
+        }
+
+
+        boolean safe = !accessibleCoor.contains(coorOfKing);
+        return safe;
+    }
+
+    public boolean isChecked(Board aBoard, Player aPlayer)
+    {
+        return !(isBoardLayoutSafe(aBoard, aPlayer));
     }
 
 

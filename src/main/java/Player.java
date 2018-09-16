@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
     List <Piece> pieces;
@@ -51,8 +52,23 @@ public class Player {
                 '}' +"\n";
     }
 
+    public boolean addPiece(Piece pieceToAdd){ return pieces.add(pieceToAdd);}
+
     public boolean removePiece(Piece pieceToRemove)
     {
         return pieces.remove(pieceToRemove);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return playerID == player.playerID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerID);
     }
 }
