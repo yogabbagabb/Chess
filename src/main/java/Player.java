@@ -30,10 +30,6 @@ public class Player {
         return playerID;
     }
 
-    public void setPlayerID(int playerID) {
-        this.playerID = playerID;
-    }
-
     public Piece getKing() {
         return king;
     }

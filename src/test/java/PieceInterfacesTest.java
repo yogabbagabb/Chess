@@ -3,7 +3,7 @@ import junit.framework.TestCase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PawnTest extends TestCase {
+public class PieceInterfacesTest extends TestCase {
 
     Pawn p;
     public void setUp() throws Exception {
