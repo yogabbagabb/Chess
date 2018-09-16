@@ -56,8 +56,8 @@ public class Game {
         List <Piece> playerOnePieces;
         List <Piece> playerTwoPieces;
 
-        int bottomPlayerID = -1;
-        int topPlayerID = -1;
+        int bottomPlayerID;
+        int topPlayerID;
         if (whiteBelow)
         {
             bottomPlayerID = 0;
@@ -171,7 +171,7 @@ public class Game {
      * @param position The position of the piece that will be removed; we assume it exists.
      *               Delete a piece from the board and from the list of pieces belonging to the player owning the piece.
      */
-    public void  deletePiece(Piece aPiece, Coordinate position)
+    private void deletePiece(Piece aPiece, Coordinate position)
     {
         if (aPiece == null)
         {
@@ -196,7 +196,7 @@ public class Game {
      * We make no assumption that this piece is actually on the board. If its player id is existent, then the
      * corresponding player will be returned even if the player doesn't own the piece.
      */
-    public Player getPlayerOfPiece(Piece aPiece)
+    private Player getPlayerOfPiece(Piece aPiece)
     {
         // Get the piece's player id
         int pid = aPiece.getPlayerID();
@@ -215,9 +215,9 @@ public class Game {
     }
 
 
-    public boolean isSuicidal(Player aPlayer, int posX, int posY)
+    private boolean isSuicidal(Board board, Player aPlayer, int posX, int posY)
     {
-        return isSuicidal(aPlayer, new Coordinate(posX, posY));
+        return isSuicidal(board, aPlayer, new Coordinate(posX, posY));
     }
 
     /**
@@ -225,9 +225,9 @@ public class Game {
      * @param aCoor The coordinate aPlayer wishes to move his or her piece to.
      * @return Whether the coordinate is occupied by another of aPlayer's pieces (true) or not (false)
      */
-    public boolean isSuicidal(Player aPlayer, Coordinate aCoor)
+    public boolean isSuicidal(Board board, Player aPlayer, Coordinate aCoor)
     {
-        Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
+        Piece pieceAtCoor = board.getPieceAtPosition(aCoor);
         if (pieceAtCoor == null)
         {
             return false;
@@ -241,18 +241,18 @@ public class Game {
         return false;
     }
 
-    public boolean isValidAndEnemyOccupied(Board board, Player aPlayer, int posX, int posY)
+    private boolean isValidAndEnemyOccupied(Board aBoard, Player aPlayer, int posX, int posY)
     {
-        return board.contains(posX, posY) && isEnemyOccupied(aPlayer, posX, posY);
+        return aBoard.contains(posX, posY) && isEnemyOccupied(aBoard, aPlayer, posX, posY);
     }
-    public boolean isEnemyOccupied(Player aPlayer, int posX, int posY)
+    boolean isEnemyOccupied(Board board, Player aPlayer, int posX, int posY)
     {
-       return isEnemyOccupied(aPlayer, Coordinate.getCoordinate(posX, posY));
+       return isEnemyOccupied(board, aPlayer, Coordinate.getCoordinate(posX, posY));
     }
 
-    public boolean isEnemyOccupied(Player aPlayer, Coordinate aCoor)
+    boolean isEnemyOccupied(Board board, Player aPlayer, Coordinate aCoor)
     {
-        Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
+        Piece pieceAtCoor = board.getPieceAtPosition(aCoor);
         if (pieceAtCoor == null)
         {
             return false;
@@ -266,14 +266,14 @@ public class Game {
         return false;
     }
 
-    public boolean isUnoccupied(int posX, int posY)
+    boolean isUnoccupied(Board board, int posX, int posY)
     {
-        return isUnoccupied(Coordinate.getCoordinate(posX, posY));
+        return isUnoccupied(board, Coordinate.getCoordinate(posX, posY));
     }
 
-    public boolean isUnoccupied(Coordinate aCoor)
+    boolean isUnoccupied(Board board, Coordinate aCoor)
     {
-       return chessBoard.getPieceAtPosition(aCoor) == null;
+       return board.getPieceAtPosition(aCoor) == null;
     }
 
     /**
@@ -288,78 +288,73 @@ public class Game {
     {
         List <MOVE_PATTERN> movePatterns = aPiece.getMovePatterns();
         Coordinate pieceCoor = aPiece.getPosition();
-        int pieceX = pieceCoor.getPosX();
-        int pieceY = pieceCoor.getPosY();
-        int boardLength = aBoard.getLength();
-        int boardWidth = aBoard.getWidth();
+        int curX = pieceCoor.getPosX();
+        int curY = pieceCoor.getPosY();
 
-        LinkedHashSet<Coordinate> pieceMoves = new LinkedHashSet <Coordinate>();
-        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <Coordinate>();
+        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <>();
 
         for (MOVE_PATTERN move : movePatterns)
         {
-            int curX = pieceX;
-            int curY = pieceY;
             switch (move)
             {
                 case NORTH:
-                    if (aBoard.contains(curX, curY + 1)&& !isSuicidal(aPlayer, curX, curY + 1))
+                    if (aBoard.contains(curX, curY + 1)&& !isSuicidal(aBoard, aPlayer, curX, curY + 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case NORTH_NO_KILL:
-                    if (aBoard.contains(curX, curY + 1) && isUnoccupied(curX, curY+1))
+                    if (aBoard.contains(curX, curY + 1) && isUnoccupied(aBoard, curX, curY+1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case SOUTH:
-                    if (aBoard.contains(curX, curY - 1) && !isSuicidal(aPlayer, curX, curY - 1))
+                    if (aBoard.contains(curX, curY - 1) && !isSuicidal(aBoard, aPlayer, curX, curY - 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case SOUTH_NO_KILL:
-                    if (aBoard.contains(curX, curY - 1) && isUnoccupied(curX, curY-1))
+                    if (aBoard.contains(curX, curY - 1) && isUnoccupied(aBoard, curX, curY-1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_NORTH:
-                    if (aBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
+                    if (aBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aBoard, aPlayer, curX + 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
                     }
-                    if (aBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
+                    if (aBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aBoard, aPlayer, curX - 1, curY +1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_SOUTH:
-                    if (aBoard.contains(curX - 1, curY - 1) && isEnemyOccupied(aPlayer, curX - 1, curY - 1))
+                    if (aBoard.contains(curX - 1, curY - 1) && isEnemyOccupied(aBoard, aPlayer, curX - 1, curY - 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY - 1));
                     }
-                    if (aBoard.contains(curX + 1, curY - 1) && isEnemyOccupied(aPlayer, curX + 1, curY - 1))
+                    if (aBoard.contains(curX + 1, curY - 1) && isEnemyOccupied(aBoard, aPlayer, curX + 1, curY - 1))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY - 1));
                     }
                     break;
                 case TWO_INITIALLY_NORTH:
-                    if (curY == 1 && isUnoccupied(curX, curY+1) && isUnoccupied(curX, curY + 2))
+                    if (curY == 1 && isUnoccupied(aBoard, curX, curY+1) && isUnoccupied(aBoard, curX, curY + 2))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 2));
                     }
                     break;
                 case TWO_INITIALLY_SOUTH:
-                    if (curY == 6 && isUnoccupied(curX, curY-1) && isUnoccupied(curX, curY - 2))
+                    if (curY == 6 && isUnoccupied(aBoard, curX, curY-1) && isUnoccupied(aBoard, curX, curY - 2))
                     {
                         pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 2));
                     }
                     break;
                 default:
-                    pieceMovesToAdd.addAll(getPieceMovesAux(aPiece, aPlayer, aBoard, move));
+                    pieceMovesToAdd.addAll(getMoves_unlimitedMotions(aPiece, aPlayer, aBoard, move));
                     break;
             }
 
@@ -368,25 +363,23 @@ public class Game {
 
     }
 
-    public Set<Coordinate> getPieceMovesAux(Piece aPiece, Player aPlayer, Board aBoard, MOVE_PATTERN move)
+    private Set<Coordinate> getMoves_unlimitedMotions(Piece aPiece, Player aPlayer, Board aBoard, MOVE_PATTERN move)
     {
         Coordinate pieceCoor = aPiece.getPosition();
-        int pieceX = pieceCoor.getPosX();
-        int pieceY = pieceCoor.getPosY();
+        int curX = pieceCoor.getPosX();
+        int curY = pieceCoor.getPosY();
         int boardLength = aBoard.getLength();
         int boardWidth = aBoard.getWidth();
 
-        int curX = pieceX;
-        int curY = pieceY;
-        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <Coordinate>();
-        int vertCounter = 1;
-        int horCounter = 1;
+        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <>();
+        int vertCounter;
+        int horCounter;
         switch (move)
         {
             case UNRESTRICTED_NORTH:
                 for (vertCounter = 1;
                      vertCounter < boardLength && chessBoard.contains(curX, curY + vertCounter) &&
-                     isUnoccupied(curX, curY + vertCounter) ;++vertCounter)
+                     isUnoccupied(aBoard, curX, curY + vertCounter) ;++vertCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
                 }
@@ -399,7 +392,7 @@ public class Game {
             case UNRESTRICTED_EAST:
                 for (horCounter = 1;
                      horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY) &&
-                     isUnoccupied(curX + horCounter, curY);++horCounter){
+                     isUnoccupied(aBoard, curX + horCounter, curY);++horCounter){
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
                 }
                 if (isValidAndEnemyOccupied(aBoard,aPlayer, curX + horCounter, curY))
@@ -410,7 +403,7 @@ public class Game {
             case UNRESTRICTED_SOUTH:
                 for (vertCounter = 1;
                      vertCounter < boardLength && chessBoard.contains(curX, curY - vertCounter) &&
-                     isUnoccupied(curX, curY - vertCounter); ++vertCounter){
+                     isUnoccupied(aBoard, curX, curY - vertCounter); ++vertCounter){
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aBoard,aPlayer, curX, curY - vertCounter))
@@ -421,7 +414,7 @@ public class Game {
             case UNRESTRICTED_WEST:
                 for (horCounter = 1;
                      horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY) &&
-                     isUnoccupied(curX - horCounter, curY);++horCounter)
+                     isUnoccupied(aBoard, curX - horCounter, curY);++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
                 }
@@ -434,7 +427,7 @@ public class Game {
             case UNRESTRICTED_NORTH_EAST:
                 for (vertCounter = 1, horCounter = 1;
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY + vertCounter) &&
-                     isUnoccupied(curX + horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
+                     isUnoccupied(aBoard, curX + horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
                 }
@@ -447,7 +440,7 @@ public class Game {
             case UNRESTRICTED_NORTH_WEST:
                 for (vertCounter = 1, horCounter = 1;
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY + vertCounter) &&
-                             isUnoccupied(curX - horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
+                             isUnoccupied(aBoard, curX - horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
                 }
@@ -459,7 +452,7 @@ public class Game {
             case UNRESTRICTED_SOUTH_EAST:
                 for (vertCounter = 1, horCounter = 1;
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY - vertCounter) &&
-                             isUnoccupied(curX + horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
+                             isUnoccupied(aBoard, curX + horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
                 }
@@ -471,7 +464,7 @@ public class Game {
             case UNRESTRICTED_SOUTH_WEST:
                 for (vertCounter = 1, horCounter = 1;
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY - vertCounter) &&
-                             isUnoccupied(curX - horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
+                             isUnoccupied(aBoard, curX - horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
                     pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
                 }
@@ -481,8 +474,10 @@ public class Game {
                 }
                 break;
             case L_SHAPE:
+                pieceMovesToAdd.addAll(getMoves_lShape(aPiece, aPlayer, aBoard));
                 break;
             case ONE_ANYWHERE:
+                pieceMovesToAdd.addAll(getMoves_oneAnywhere(aPiece, aPlayer, aBoard));
                 break;
         }
 
@@ -490,6 +485,46 @@ public class Game {
 
     }
 
+    private Set<Coordinate> getMoves_lShape(Piece aPiece, Player aPlayer, Board aBoard)
+    {
+        final int [] possibleXCoor = {-2, -1, 1, 2, 2, 1, -1, -2};
+        final int [] possibleYCoor = {1, 2, 2, 1, -1, -2, -2, -1};
+
+        return getCoordinatesFromOffsets(aPiece, aPlayer, aBoard, possibleXCoor, possibleYCoor);
+
+    }
+
+
+    private Set<Coordinate> getMoves_oneAnywhere(Piece aPiece, Player aPlayer, Board aBoard)
+    {
+        final int [] possibleXCoor = {0,1,1,1,0,-1,-1,-1};
+        final int [] possibleYCoor = {1,1,0,-1,-1,-1,0,1};
+
+        return getCoordinatesFromOffsets(aPiece, aPlayer, aBoard, possibleXCoor, possibleYCoor);
+
+    }
+
+    private Set<Coordinate> getCoordinatesFromOffsets(Piece aPiece, Player aPlayer, Board aBoard, int[] possibleXCoor, int[] possibleYCoor) {
+        Coordinate pieceCoor = aPiece.getPosition();
+        int posX = pieceCoor.getPosX();
+        int posY = pieceCoor.getPosY();
+        int curX;
+        int curY;
+        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet<>();
+
+        final int numArrangements = 8;
+
+        for (int idx = 0; idx < numArrangements; ++idx) {
+            curX = posX + possibleXCoor[idx];
+            curY = posY + possibleYCoor[idx];
+
+            if (aBoard.contains(curX, curY) && (isUnoccupied(aBoard, curX, curY) || isEnemyOccupied(aBoard, aPlayer, curX, curY))) {
+                pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY));
+            }
+
+        }
+        return pieceMovesToAdd;
+    }
 
 
     /**

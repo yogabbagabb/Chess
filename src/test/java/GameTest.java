@@ -130,29 +130,29 @@ public class GameTest extends TestCase {
     public void testSuicide()
     {
         Player bottomPlayer = players.get(0);
-        boolean isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(0,0));
+        boolean isSuicide = gameInstance.isSuicidal(board,bottomPlayer, Coordinate.getCoordinate(0,0));
         assertTrue(isSuicide);
 
-        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(0,3));
+        isSuicide = gameInstance.isSuicidal(board,bottomPlayer, Coordinate.getCoordinate(0,3));
         assertFalse(isSuicide);
 
         Piece aPawn = board.getPieceAtPosition(1,1);
         gameInstance.movePiece(aPawn, new Coordinate(1,3));
-        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(1,3));
+        isSuicide = gameInstance.isSuicidal(board,bottomPlayer, Coordinate.getCoordinate(1,3));
         assertTrue(isSuicide);
 
-        isSuicide = gameInstance.isSuicidal(bottomPlayer, Coordinate.getCoordinate(1,1));
+        isSuicide = gameInstance.isSuicidal(board,bottomPlayer, Coordinate.getCoordinate(1,1));
         assertFalse(isSuicide);
     }
 
     public void testOccupation()
     {
         Player bottomPlayer = players.get(0);
-        assertTrue(gameInstance.isEnemyOccupied(bottomPlayer, 0,7));
-        assertFalse(gameInstance.isEnemyOccupied(bottomPlayer, 0,1));
-        assertFalse(gameInstance.isEnemyOccupied(bottomPlayer, 0,3));
-        assertTrue(gameInstance.isUnoccupied(0,3));
-        assertFalse(gameInstance.isUnoccupied(0,7));
+        assertTrue(gameInstance.isEnemyOccupied(board,bottomPlayer, 0,7));
+        assertFalse(gameInstance.isEnemyOccupied(board,bottomPlayer, 0,1));
+        assertFalse(gameInstance.isEnemyOccupied(board,bottomPlayer, 0,3));
+        assertTrue(gameInstance.isUnoccupied(board,0,3));
+        assertFalse(gameInstance.isUnoccupied(board,0,7));
     }
 
 

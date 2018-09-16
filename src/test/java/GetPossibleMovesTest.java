@@ -173,6 +173,78 @@ public class GetPossibleMovesTest extends TestCase {
         assertEquals(expectedOutput, actualOutput);
     }
 
+    public void testKnightMovement()
+    {
+
+        board.setPieceAtPosition(3,3, new Knight(Coordinate.getCoordinate(3,3), 1));
+        Piece aPiece = board.getPieceAtPosition(3,3);
+        Set<Coordinate> possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        String expectedOutput = stripNewlines("[Coordinate{posX=1, posY=4}, Coordinate{posX=2, posY=5}, Coordinate{posX=4, posY=5}, Coordinate{posX=5, posY=4}, Coordinate{posX=5, posY=2}, Coordinate{posX=4, posY=1}, Coordinate{posX=2, posY=1}, Coordinate{posX=1, posY=2}]");
+        String actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(1,4, new Knight(Coordinate.getCoordinate(1,4), 1));
+        expectedOutput = stripNewlines("[Coordinate{posX=2, posY=5}, Coordinate{posX=4, posY=5}, Coordinate{posX=5, posY=4}, Coordinate{posX=5, posY=2}, Coordinate{posX=4, posY=1}, Coordinate{posX=2, posY=1}, Coordinate{posX=1, posY=2}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(4,5, new Knight(Coordinate.getCoordinate(4, 5), 0));
+        expectedOutput = stripNewlines("[Coordinate{posX=2, posY=5}, Coordinate{posX=4, posY=5}, Coordinate{posX=5, posY=4}, Coordinate{posX=5, posY=2}, Coordinate{posX=4, posY=1}, Coordinate{posX=2, posY=1}, Coordinate{posX=1, posY=2}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(5,2, new Knight(Coordinate.getCoordinate(5, 2), 1));
+        expectedOutput = stripNewlines("[Coordinate{posX=2, posY=5}, Coordinate{posX=4, posY=5}, Coordinate{posX=5, posY=4}, Coordinate{posX=4, posY=1}, Coordinate{posX=2, posY=1}, Coordinate{posX=1, posY=2}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(4,3, new Knight(Coordinate.getCoordinate(4, 3), 1));
+        expectedOutput = stripNewlines("[Coordinate{posX=2, posY=5}, Coordinate{posX=4, posY=5}, Coordinate{posX=5, posY=4}, Coordinate{posX=4, posY=1}, Coordinate{posX=2, posY=1}, Coordinate{posX=1, posY=2}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(7, 7, new Knight(Coordinate.getCoordinate(7, 7), 1));
+        aPiece = board.getPieceAtPosition(7, 7);
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        expectedOutput = stripNewlines("[Coordinate{posX=6, posY=5}]");
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    public void testKingMovement()
+    {
+        board.setPieceAtPosition(3,3, new King(Coordinate.getCoordinate(3,3), 1));
+        Piece aPiece = board.getPieceAtPosition(3,3);
+        Set<Coordinate> possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        String expectedOutput = stripNewlines("[Coordinate{posX=3, posY=4}, Coordinate{posX=4, posY=4}, Coordinate{posX=4, posY=3}, Coordinate{posX=4, posY=2}, Coordinate{posX=3, posY=2}, Coordinate{posX=2, posY=2}, Coordinate{posX=2, posY=3}, Coordinate{posX=2, posY=4}]");
+        String actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(3, 4, new King(Coordinate.getCoordinate(3,4), 1));
+        expectedOutput = stripNewlines("[Coordinate{posX=4, posY=4}, Coordinate{posX=4, posY=3}, Coordinate{posX=4, posY=2}, Coordinate{posX=3, posY=2}, Coordinate{posX=2, posY=2}, Coordinate{posX=2, posY=3}, Coordinate{posX=2, posY=4}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(4, 4, new King(Coordinate.getCoordinate(4,4), 0));
+        expectedOutput = stripNewlines("[Coordinate{posX=4, posY=4}, Coordinate{posX=4, posY=3}, Coordinate{posX=4, posY=2}, Coordinate{posX=3, posY=2}, Coordinate{posX=2, posY=2}, Coordinate{posX=2, posY=3}, Coordinate{posX=2, posY=4}]");
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(1), board);
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+
+        board.setPieceAtPosition(7, 7, new King(Coordinate.getCoordinate(7, 7), 0));
+        aPiece = board.getPieceAtPosition(7, 7);
+        possibleMoves = gameInstance.getPieceMoves(aPiece, players.get(0), board);
+        expectedOutput = stripNewlines("[Coordinate{posX=7, posY=6}, Coordinate{posX=6, posY=6}, Coordinate{posX=6, posY=7}]");
+        actualOutput = stripNewlines(possibleMoves.toString());
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+
     public void testGetSafePieceMoves() {
     }
 
