@@ -1,6 +1,7 @@
 import junit.framework.TestCase;
 
 import java.util.List;
+import java.util.Set;
 
 public class CheckTest extends TestCase {
 
@@ -26,7 +27,6 @@ public class CheckTest extends TestCase {
 
         gameInstance.setPieceAtPosition(board, 4, 4, new Queen (Coordinate.getCoordinate(4, 4),1));
         gameInstance.setPieceAtPosition(board, 4, 1, null);
-        System.out.println(board.toString());
         assertFalse(gameInstance.isBoardLayoutSafe(board, players.get(0)));
     }
 
@@ -48,6 +48,10 @@ public class CheckTest extends TestCase {
 
         assertTrue(gameInstance.isBoardLayoutSafe(board, players.get(1)));
         assertFalse(gameInstance.isChecked(board, players.get(1)));
+
+        Set<Coordinate> allSafeMoves = gameInstance.getAllSafePieceMoves(players.get(0), board);
+        assertTrue(allSafeMoves.isEmpty());
+        assertTrue(gameInstance.isCheckmated(players.get(0),board));
     }
 
     public void testScholarMate(){
@@ -71,13 +75,15 @@ public class CheckTest extends TestCase {
 
         gameInstance.movePiece(board, queenOne, Coordinate.getCoordinate(5,6));
 
-        System.out.println((board));
-
         assertTrue(gameInstance.isBoardLayoutSafe(board, players.get(0)));
         assertFalse(gameInstance.isChecked(board, players.get(0)));
 
         assertFalse(gameInstance.isBoardLayoutSafe(board, players.get(1)));
         assertTrue(gameInstance.isChecked(board, players.get(1)));
+
+        Set<Coordinate> allSafeMoves = gameInstance.getAllSafePieceMoves(players.get(1), board);
+        assertTrue(allSafeMoves.isEmpty());
+        assertTrue(gameInstance.isCheckmated(players.get(1),board));
     }
 
 
@@ -114,11 +120,14 @@ public class CheckTest extends TestCase {
 
         gameInstance.movePiece(board, knightOne, Coordinate.getCoordinate(3,5));
 
-        System.out.println(board);
         assertTrue(gameInstance.isBoardLayoutSafe(board, players.get(0)));
         assertFalse(gameInstance.isChecked(board, players.get(0)));
 
         assertFalse(gameInstance.isBoardLayoutSafe(board, players.get(1)));
         assertTrue(gameInstance.isChecked(board, players.get(1)));
+
+        Set<Coordinate> allSafeMoves = gameInstance.getAllSafePieceMoves(players.get(1), board);
+        assertTrue(allSafeMoves.isEmpty());
+        assertTrue(gameInstance.isCheckmated(players.get(1),board));
     }
 }

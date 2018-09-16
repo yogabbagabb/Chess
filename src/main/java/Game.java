@@ -214,11 +214,22 @@ public class Game {
         return null;
     }
 
+    /**
+     *
+     * Set a piece at a position, update its coordinate to be at the new position and add the piece
+     * to its owner's (player's) list of pieces.
+     * @param aBoard The board on which we will place our piece.
+     * @param xPos X coordinate of piece.
+     * @param yPos Y coordinate of piece.
+     * @param replacementPiece The piece that will occupy xPos, yPos.
+     */
     public void setPieceAtPosition(Board aBoard, int xPos, int yPos, Piece replacementPiece)
     {
         aBoard.setPieceAtPosition(xPos, yPos, replacementPiece);
+
         if (replacementPiece  != null)
         {
+            replacementPiece.setPosition(Coordinate.getCoordinate(xPos,yPos));
             Player playerOfPiece = getPlayerOfPiece(replacementPiece);
             playerOfPiece.addPiece(replacementPiece);
         }
@@ -542,14 +553,74 @@ public class Game {
      * @param aPiece The piece whose set of moves from possibleMoves we will refine.
      * @param aPlayer The player possessing the piece; we assume aPlayer is accurate.
      * @param aBoard The board on which we can determine the set of moves we can make.
-     * @param possibleMoves A set of coordinates that the piece can move to, not taking into consideration that, by moving to a coordinate,
      * the opponent(s) can now kill our king.
      * @return A set of coordinates that we can move to without being checked
      */
-    public Set<Coordinate> getSafePieceMoves(Piece aPiece, Player aPlayer, Board aBoard,Set<Coordinate> possibleMoves)
+    public Set<Coordinate> getSafePieceMoves(Piece aPiece, Player aPlayer, Board aBoard)
     {
-        return null;
+        Set<Coordinate> pieceMoves = getPieceMoves(aPiece, aPlayer, aBoard);
+        for (Iterator<Coordinate> iterator = pieceMoves.iterator(); iterator.hasNext();)
+        {
+            // Get a move that aPiece can take, regardless of whether taking that move results in aPlayer being checked.
+            Coordinate possibleMove = iterator.next();
+
+            // Get the old location of aPiece.
+            Coordinate oldLoc = aPiece.getPosition();
+
+            // Get the piece, if it exists, at the location of possibleMove.
+            // If the piece exists, it is necessarily an opponent's.
+            Piece pieceAtMoveLoc = aBoard.getPieceAtPosition(possibleMove);
+
+            if (pieceAtMoveLoc != null)
+            {
+                deletePiece(aBoard, pieceAtMoveLoc, possibleMove);
+                movePiece(aBoard, aPiece, possibleMove);
+
+                if (isChecked(aBoard, aPlayer))
+                {
+                    iterator.remove();
+                }
+
+                movePiece(aBoard, aPiece, oldLoc);
+                setPieceAtPosition(aBoard, possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
+            }
+            else
+            {
+                movePiece(aBoard, aPiece, possibleMove);
+
+                if (isChecked(aBoard, aPlayer))
+                {
+                    iterator.remove();
+                }
+
+                movePiece(aBoard, aPiece, oldLoc);
+            }
+
+
+
+        }
+        return pieceMoves;
     }
+
+    public Set<Coordinate> getAllSafePieceMoves(Player aPlayer, Board aBoard)
+    {
+        List <Piece> playerPieces = aPlayer.getPieces();
+        Set <Coordinate> allSafeMoves = new LinkedHashSet<>();
+        for (Piece playerPiece: playerPieces)
+        {
+            Set <Coordinate> safeMovesForPiece = getSafePieceMoves(playerPiece, aPlayer, aBoard);
+            allSafeMoves.addAll(safeMovesForPiece);
+        }
+
+        return allSafeMoves;
+    }
+
+    public boolean isCheckmated(Player aPlayer, Board aBoard)
+    {
+        Set<Coordinate> allSafeMoves = getAllSafePieceMoves(aPlayer, aBoard);
+        return allSafeMoves.isEmpty();
+    }
+
 
 
     /**
