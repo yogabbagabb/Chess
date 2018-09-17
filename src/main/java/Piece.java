@@ -2,6 +2,9 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * Piece is the parent for all actual chess types.
+ */
 public abstract class Piece {
     private Coordinate position;
     private int playerID;

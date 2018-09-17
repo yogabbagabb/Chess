@@ -1,6 +1,9 @@
 import java.util.*;
 
 
+/**
+ * Game moves the pieces belonging to a player on a board in a legal way.
+ */
 public class Game {
 
     private List <Player> players;
@@ -548,6 +551,8 @@ public class Game {
 
             if (pieceAtMoveLoc != null)
             {
+                // If we enter here, then the piece belongs to an opponent.
+                // Remove our oppponent's piece temporarily
                 deletePiece(pieceAtMoveLoc, possibleMove);
                 movePiece(aPiece, possibleMove);
 
@@ -557,6 +562,7 @@ public class Game {
                 }
 
                 movePiece(aPiece, oldLoc);
+                // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }
             else
@@ -613,7 +619,7 @@ public class Game {
 
     /**
      * @param aPlayer The player who wishes to end his turn having moved in such a way that the board is has the state of aBoard.
-     * @return Whether the configuration is legal: is aPlayer's king not at risk?
+     * @return Whether the configuration is legal: is aPlayer's king at risk.
      */
     private boolean isBoardLayoutSafe(Player aPlayer)
     {
@@ -622,14 +628,17 @@ public class Game {
         Set <Coordinate> accessibleCoor = new LinkedHashSet<>();
         for (Player playerInst: players)
         {
+            // We don't need to consider the set of possible moves for ourselves.
             if (playerInst.equals(aPlayer))
             {
                continue;
             }
 
+            // Make a container to contain all possible moves that opponent(s) can take on with some piece
             List <Piece> playerInstPieces = playerInst.getPieces();
             for (Piece aPiece: playerInstPieces)
             {
+                // Add all possible moves for a particular opponent piece to our container
                accessibleCoor.addAll(getPieceMoves(aPiece, playerInst));
             }
         }

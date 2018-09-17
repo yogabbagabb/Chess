@@ -48,6 +48,7 @@ public class CheckCheckmateTest extends TestCase {
         assertFalse(gameInstance.isChecked(players.get(1)));
 
         assertTrue(gameInstance.isCheckmated(players.get(0)));
+        System.out.println(board);
     }
 
     public void testScholarMate(){
@@ -76,6 +77,7 @@ public class CheckCheckmateTest extends TestCase {
         assertTrue(gameInstance.isChecked(players.get(1)));
 
         assertTrue(gameInstance.isCheckmated(players.get(1)));
+        System.out.println(board);
     }
 
 
@@ -117,5 +119,6 @@ public class CheckCheckmateTest extends TestCase {
         assertTrue(gameInstance.isChecked(players.get(1)));
 
         assertTrue(gameInstance.isCheckmated(players.get(1)));
+        System.out.println(board);
     }
 }

@@ -1,6 +1,9 @@
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Player maintains the list of pieces belonging to any player.
+ */
 public class Player {
     List <Piece> pieces;
     int playerID;
@@ -12,11 +15,6 @@ public class Player {
         this.king = null;
     }
 
-    public Player(List<Piece> pieces, int playerID, Piece king) {
-        this.pieces = pieces;
-        this.playerID = playerID;
-        this.king = king;
-    }
 
     public List<Piece> getPieces() {
         return pieces;

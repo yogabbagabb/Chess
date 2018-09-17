@@ -38,3 +38,189 @@ Set up the board
 	Each piece needs to be given a playerID
 Move a piece
 Delete a piece
+
+
+How does the GameManager interact with the Game?
+	The Game Manager sets up a board and does the following:
+		While the game hasn't ended:
+			Alternate between players
+				Determine if the player is checkmated or stalemated.
+				Let every player choose a piece and allow the piece to be moved
+				to another position if the position exists within the piece's safe moves.
+			What methods do we need?
+				isCheckmated
+				isStalemated
+				isChecked
+				getSafeMoves
+				movePiece
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PossibleMovesPiece: Those moves a piece can make, regardless if making them checks its player
+PossibleMoves: PossibleMovesPiece over all pieces
+
+
+SafePossibleMovesPiece: 
+	For each move in PossibleMovesPiece:
+		Make the move
+			Check to see that PossibleMoves(opponent) contains your king
+				If so, remove the move
+			Otherwise
+				Keep the piece
+	
+
+
+
+SafePossibleMoves: SafePossibleMovesPiece over all pieces
+
+
+Checked:
+	PossibleMoves(opponent) contains your king
+
+
+Checkmated:
+	Checked and SafePossibleMoves is empty
+
+Stalemated:
+	Not Checked and SafePossibleMoves is empty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

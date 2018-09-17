@@ -1,4 +1,6 @@
-
+/**
+ * Board stores the piece (or blank space) at each position of the board.
+ */
 public class Board {
 
     private int length;

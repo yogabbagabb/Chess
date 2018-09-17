@@ -73,6 +73,7 @@ public class StalemateTest extends TestCase {
 
         assertFalse(gameInstance.isChecked(players.get(1)));
         assertTrue(gameInstance.isStalemated(players.get(1)));
+        System.out.println(board);
 
 
     }

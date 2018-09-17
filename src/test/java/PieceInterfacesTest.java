@@ -22,7 +22,6 @@ public class PieceInterfacesTest extends TestCase {
         assertEquals(ID, 0);
         
         List<MOVE_PATTERN> patterns = p.getMovePatterns();
-        System.out.println(patterns.toString());
         assertTrue(patterns.toString().equals("[SOUTH_NO_KILL, DIAGONAL_ON_ENEMY_SOUTH, TWO_INITIALLY_SOUTH]"));
     }
 

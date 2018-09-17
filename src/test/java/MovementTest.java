@@ -16,6 +16,12 @@ public class MovementTest extends TestCase {
         players = gameInstance.getPlayers();
     }
 
+    public String stripNewlines(String aString)
+    {
+        String newLinesGoneString = aString.replace("\n","");
+        return newLinesGoneString.replace("\r","");
+    }
+
     public void testInitialization()
     {
         String expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
@@ -26,10 +32,9 @@ public class MovementTest extends TestCase {
                         "X  X  X  X  X  X  X  X  \n" +
                         "P  P  P  P  P  P  P  P  \n" +
                         "R  Kn Bi Q  K  Bi Kn R  \n";
-        // TODO: Add test for toString in BoardTest
         assertEquals(board.toString(), expectedVisual);
-//        assertEquals((players.get(0)), "Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=0, king=K }");
-//        System.out.println(gameInstance.getPlayers().get(1));
+        String expectedOutput = "Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=0, king=K }";
+        assertEquals(stripNewlines(expectedOutput), stripNewlines(players.get(0).toString()));
     }
 
     public void testMovementDeletion()
@@ -48,7 +53,7 @@ public class MovementTest extends TestCase {
                 "P  X  P  P  P  P  P  P  \n" +
                 "R  Kn Bi Q  K  Bi Kn R  \n";
         assertEquals(board.toString(), expectedVisual);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         gameInstance.movePiece(aPawn, new Coordinate(3,3));
         shouldBeNull = board.getPieceAtPosition(1,3);
@@ -62,7 +67,7 @@ public class MovementTest extends TestCase {
                 "P  X  P  P  P  P  P  P  \n" +
                 "R  Kn Bi Q  K  Bi Kn R  \n";
         assertEquals(board.toString(), expectedVisual);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         gameInstance.movePiece(aPawn, new Coordinate(3,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
@@ -74,7 +79,7 @@ public class MovementTest extends TestCase {
                 "P  X  P  P  P  P  P  P  \n" +
                 "R  Kn Bi P  K  Bi Kn R  \n";
         assertEquals(board.toString(), expectedVisual);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         gameInstance.movePiece(aPawn, new Coordinate(4,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
@@ -86,7 +91,7 @@ public class MovementTest extends TestCase {
                 "P  X  P  P  P  P  P  P  \n" +
                 "R  Kn Bi X  P  Bi Kn R  \n";
         assertEquals(board.toString(), expectedVisual);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         gameInstance.movePiece(aPawn, new Coordinate(5,0));
         expectedVisual = "R  Kn Bi Q  K  Bi Kn R  \n" +
@@ -98,7 +103,7 @@ public class MovementTest extends TestCase {
                 "P  X  P  P  P  P  P  P  \n" +
                 "R  Kn Bi X  X  P  Kn R  \n";
         assertEquals(board.toString(), expectedVisual);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         shouldBeNull = board.getPieceAtPosition(4, 0);
         assertEquals(shouldBeNull, null);
