@@ -140,6 +140,7 @@ SafePossibleMovesPiece:
 				If so, remove the move
 			Otherwise
 				Keep the piece
+		Undo the move
 	
 
 
