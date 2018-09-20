@@ -1,8 +1,10 @@
+package logic;
+
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Player maintains the list of pieces belonging to any player.
+ * logic.Player maintains the list of pieces belonging to any player.
  */
 public class Player {
     List <Piece> pieces;
@@ -39,7 +41,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
+        return "logic.Player{" +
                 "pieces=" + pieces +
                 ", playerID=" + playerID +
                 ", king=" + king +

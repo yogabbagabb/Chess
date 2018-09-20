@@ -1,8 +1,10 @@
+package logic;
+
 import java.util.*;
 
 
 /**
- * Game moves the pieces belonging to a player on a board in a legal way.
+ * logic.Game moves the pieces belonging to a player on a board in a legal way.
  */
 public class Game {
 
@@ -70,42 +72,42 @@ public class Game {
 
         for (int pIndex = 0; pIndex < numPlayers; pIndex++)
         {
-            aPiece = new Rook(new Coordinate(0,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Rook(new Square(0,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[0][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new Knight(new Coordinate(1,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Knight(new Square(1,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[1][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new Bishop(new Coordinate(2,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Bishop(new Square(2,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[2][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new Queen(new Coordinate(3,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Queen(new Square(3,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[3][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new King(new Coordinate(4,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new King(new Square(4,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[4][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
             playerArray[pIndex].setKing(aPiece);
 
-            aPiece = new Bishop(new Coordinate(5,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Bishop(new Square(5,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[5][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new Knight(new Coordinate(6,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Knight(new Square(6,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[6][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
-            aPiece = new Rook(new Coordinate(7,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
+            aPiece = new Rook(new Square(7,secondaryPieceIdx[pIndex]), playerIDs[pIndex]);
             piecePositions[7][secondaryPieceIdx[pIndex]] = aPiece;
             currentPiecesList.add(aPiece);
 
             for (int colIndex = 0; colIndex < boardWidth; colIndex++)
             {
-                aPiece = new Pawn(new Coordinate(colIndex, PawnIdx[pIndex]), playerIDs[pIndex],
+                aPiece = new Pawn(new Square(colIndex, PawnIdx[pIndex]), playerIDs[pIndex],
                         pawnDir[pIndex]);
                 piecePositions[colIndex][PawnIdx[pIndex]] = aPiece;
                 currentPiecesList.add(aPiece);
@@ -137,9 +139,9 @@ public class Game {
      *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
      *                    we assume it is an enemy.
      */
-    public void  movePiece(Piece aPiece, Coordinate newPosition)
+    public void  movePiece(Piece aPiece, Square newPosition)
     {
-        Coordinate curPosition = aPiece.getPosition();
+        Square curPosition = aPiece.getPosition();
         // Vacate the location of the piece being moved.
         chessBoard.setPieceAtPosition(curPosition, null);
 
@@ -161,7 +163,7 @@ public class Game {
      * @param position The position of the piece that will be removed; we assume it exists.
      *               Delete a piece from the board and from the list of pieces belonging to the player owning the piece.
      */
-    private void deletePiece(Piece aPiece, Coordinate position)
+    private void deletePiece(Piece aPiece, Square position)
     {
         if (aPiece == null)
         {
@@ -220,7 +222,7 @@ public class Game {
 
         if (replacementPiece  != null)
         {
-            replacementPiece.setPosition(Coordinate.getCoordinate(xPos,yPos));
+            replacementPiece.setPosition(Square.getCoordinate(xPos,yPos));
             Player playerOfPiece = getPlayerOfPiece(replacementPiece);
             playerOfPiece.addPiece(replacementPiece);
         }
@@ -234,7 +236,7 @@ public class Game {
 
     private boolean isEnemyOccupied(Player aPlayer, int posX, int posY)
     {
-       return isEnemyOccupied(aPlayer, Coordinate.getCoordinate(posX, posY));
+       return isEnemyOccupied(aPlayer, Square.getCoordinate(posX, posY));
     }
 
     /**
@@ -243,7 +245,7 @@ public class Game {
      * @param aCoor The coordinate to check.
      * @return Whether the coordinate is occupied by an opponent's piece.
      */
-    private boolean isEnemyOccupied(Player aPlayer, Coordinate aCoor)
+    private boolean isEnemyOccupied(Player aPlayer, Square aCoor)
     {
         Piece pieceAtCoor = chessBoard.getPieceAtPosition(aCoor);
         if (pieceAtCoor == null)
@@ -261,10 +263,10 @@ public class Game {
 
     private boolean isUnoccupied(int posX, int posY)
     {
-        return isUnoccupied(Coordinate.getCoordinate(posX, posY));
+        return isUnoccupied(Square.getCoordinate(posX, posY));
     }
 
-    private boolean isUnoccupied(Coordinate aCoor)
+    private boolean isUnoccupied(Square aCoor)
     {
        return chessBoard.getPieceAtPosition(aCoor) == null;
     }
@@ -275,17 +277,17 @@ public class Game {
      * @return A set of coordinates that the piece can move to, not taking into consideration that, by moving to a coordinate,
      * the opponent(s) can now kill our king.
      */
-    private Set<Coordinate> getPieceMoves(Piece aPiece, Player aPlayer)
+    private Set<Square> getPieceMoves(Piece aPiece, Player aPlayer)
     {
         // Get the patterns that describe how aPiece can move.
         List <MOVE_PATTERN> movePatterns = aPiece.getMovePatterns();
-        Coordinate pieceCoor = aPiece.getPosition();
+        Square pieceCoor = aPiece.getPosition();
         // Get the current locations of aPiece.
         int curX = pieceCoor.getPosX();
         int curY = pieceCoor.getPosY();
 
         // Make a set to store the coordinates aPiece can take on.
-        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <>();
+        LinkedHashSet<Square> pieceMovesToAdd = new LinkedHashSet <>();
 
         for (MOVE_PATTERN move : movePatterns)
         {
@@ -295,47 +297,47 @@ public class Game {
                     // Make sure the board contains the proposed coordinate and is unoccupied
                     if (chessBoard.contains(curX, curY + 1) && isUnoccupied(curX, curY+1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX, curY + 1));
                     }
                     break;
                 case SOUTH_NO_KILL:
                     if (chessBoard.contains(curX, curY - 1) && isUnoccupied(curX, curY-1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX, curY - 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_NORTH:
                     // Make sure the board contains the proposed location and has an enemy on it.
                     if (chessBoard.contains(curX + 1, curY + 1) && isEnemyOccupied(aPlayer, curX + 1, curY +1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY + 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX + 1, curY + 1));
                     }
                     if (chessBoard.contains(curX - 1, curY + 1) && isEnemyOccupied(aPlayer, curX - 1, curY +1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY + 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX - 1, curY + 1));
                     }
                     break;
                 case DIAGONAL_ON_ENEMY_SOUTH:
                     if (chessBoard.contains(curX - 1, curY - 1) && isEnemyOccupied(aPlayer, curX - 1, curY - 1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX - 1, curY - 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX - 1, curY - 1));
                     }
                     if (chessBoard.contains(curX + 1, curY - 1) && isEnemyOccupied(aPlayer, curX + 1, curY - 1))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX + 1, curY - 1));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX + 1, curY - 1));
                     }
                     break;
                 case TWO_INITIALLY_NORTH:
                     // Make sure that the pawn is at its initial position and its path is unobstructed.
                     if (curY == 1 && isUnoccupied(curX, curY+1) && isUnoccupied(curX, curY + 2))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + 2));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX, curY + 2));
                     }
                     break;
                 case TWO_INITIALLY_SOUTH:
                     if (curY == 6 && isUnoccupied(curX, curY-1) && isUnoccupied(curX, curY - 2))
                     {
-                        pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - 2));
+                        pieceMovesToAdd.add(Square.getCoordinate(curX, curY - 2));
                     }
                     break;
                 default:
@@ -354,15 +356,15 @@ public class Game {
      * @return A set of coordinates that the piece can move to, not taking into consideration that, by moving to a coordinate,
      * the opponent(s) can now kill our king. These are coordinates accessible by pieces other than pawns.
      */
-    private Set<Coordinate> getMoves_unlimitedMotions(Piece aPiece, Player aPlayer, MOVE_PATTERN move)
+    private Set<Square> getMoves_unlimitedMotions(Piece aPiece, Player aPlayer, MOVE_PATTERN move)
     {
-        Coordinate pieceCoor = aPiece.getPosition();
+        Square pieceCoor = aPiece.getPosition();
         int curX = pieceCoor.getPosX();
         int curY = pieceCoor.getPosY();
         int boardLength = chessBoard.getLength();
         int boardWidth = chessBoard.getWidth();
 
-        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet <>();
+        LinkedHashSet<Square> pieceMovesToAdd = new LinkedHashSet <>();
         int vertCounter;
         int horCounter;
         switch (move)
@@ -374,36 +376,36 @@ public class Game {
                      vertCounter < boardLength && chessBoard.contains(curX, curY + vertCounter) &&
                      isUnoccupied(curX, curY + vertCounter) ;++vertCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX, curY + vertCounter));
                 }
 
                 // If our vertical offset stopped incrementing because we encountered another piece,
                 // then determine if this piece belongs to our enemy, in which case we can move to our enemy's spot.
                 if(isValidAndEnemyOccupied(aPlayer, curX, curY + vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX, curY + vertCounter));
                 }
                 break;
             case UNRESTRICTED_EAST:
                 for (horCounter = 1;
                      horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY) &&
                      isUnoccupied(curX + horCounter, curY);++horCounter){
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX + horCounter, curY))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY));
                 }
                 break;
             case UNRESTRICTED_SOUTH:
                 for (vertCounter = 1;
                      vertCounter < boardLength && chessBoard.contains(curX, curY - vertCounter) &&
                      isUnoccupied(curX, curY - vertCounter); ++vertCounter){
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX, curY - vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX, curY - vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX, curY - vertCounter));
                 }
                 break;
             case UNRESTRICTED_WEST:
@@ -411,11 +413,11 @@ public class Game {
                      horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY) &&
                      isUnoccupied(curX - horCounter, curY);++horCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX - horCounter, curY))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY));
                 }
                 break;
 
@@ -426,11 +428,11 @@ public class Game {
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY + vertCounter) &&
                      isUnoccupied(curX + horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY + vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX + horCounter, curY + vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY + vertCounter));
                 }
                 break;
 
@@ -439,11 +441,11 @@ public class Game {
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY + vertCounter) &&
                              isUnoccupied(curX - horCounter, curY + vertCounter) ;++vertCounter, ++horCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY + vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX - horCounter, curY + vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY + vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY + vertCounter));
                 }
                 break;
             case UNRESTRICTED_SOUTH_EAST:
@@ -451,11 +453,11 @@ public class Game {
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX + horCounter, curY - vertCounter) &&
                              isUnoccupied(curX + horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY - vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX + horCounter, curY - vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX + horCounter, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + horCounter, curY - vertCounter));
                 }
                 break;
             case UNRESTRICTED_SOUTH_WEST:
@@ -463,11 +465,11 @@ public class Game {
                      vertCounter < boardLength && horCounter < boardWidth && chessBoard.contains(curX - horCounter, curY - vertCounter) &&
                              isUnoccupied(curX - horCounter, curY - vertCounter) ;++vertCounter, ++horCounter)
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY - vertCounter));
                 }
                 if (isValidAndEnemyOccupied(aPlayer, curX - horCounter, curY - vertCounter))
                 {
-                    pieceMovesToAdd.add(Coordinate.getCoordinate(curX - horCounter, curY - vertCounter));
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - horCounter, curY - vertCounter));
                 }
                 break;
             case L_SHAPE:
@@ -489,7 +491,7 @@ public class Game {
      * @param aPlayer The player owning the knight.
      * @return The coordinates a particular knight can taken on.
      */
-    private Set<Coordinate> getMoves_lShape(Piece aPiece, Player aPlayer)
+    private Set<Square> getMoves_lShape(Piece aPiece, Player aPlayer)
     {
         final int [] possibleXCoor = {-2, -1, 1, 2, 2, 1, -1, -2};
         final int [] possibleYCoor = {1, 2, 2, 1, -1, -2, -2, -1};
@@ -505,7 +507,7 @@ public class Game {
      * @param aPlayer The player owning the king.
      * @return The coordinates a particular king can taken on.
      */
-    private Set<Coordinate> getMoves_oneAnywhere(Piece aPiece, Player aPlayer)
+    private Set<Square> getMoves_oneAnywhere(Piece aPiece, Player aPlayer)
     {
         final int [] possibleXCoor = {0,1,1,1,0,-1,-1,-1};
         final int [] possibleYCoor = {1,1,0,-1,-1,-1,0,1};
@@ -523,13 +525,13 @@ public class Game {
      * @param possibleYCoor An array of y coordinates specifying the positions relative to aPiece that can be taken on.
      * @return The coordinates a piece can go to given offsets from its current position.
      */
-    private Set<Coordinate> getCoordinatesFromOffsets(Piece aPiece, Player aPlayer, int[] possibleXCoor, int[] possibleYCoor) {
-        Coordinate pieceCoor = aPiece.getPosition();
+    private Set<Square> getCoordinatesFromOffsets(Piece aPiece, Player aPlayer, int[] possibleXCoor, int[] possibleYCoor) {
+        Square pieceCoor = aPiece.getPosition();
         int posX = pieceCoor.getPosX();
         int posY = pieceCoor.getPosY();
         int curX;
         int curY;
-        LinkedHashSet<Coordinate> pieceMovesToAdd = new LinkedHashSet<>();
+        LinkedHashSet<Square> pieceMovesToAdd = new LinkedHashSet<>();
 
         final int numArrangements = 8;
 
@@ -540,7 +542,7 @@ public class Game {
 
             // If the board contains the position and the position is unoccupied or occupied by our enemy, we can go there.
             if (chessBoard.contains(curX, curY) && (isUnoccupied(curX, curY) || isEnemyOccupied(aPlayer, curX, curY))) {
-                pieceMovesToAdd.add(Coordinate.getCoordinate(curX, curY));
+                pieceMovesToAdd.add(Square.getCoordinate(curX, curY));
             }
 
         }
@@ -555,16 +557,16 @@ public class Game {
      * the opponent(s) can now kill our king.
      * @return A set of coordinates that we can move to without being checked.
      */
-    public Set<Coordinate> getSafePieceMoves(Piece aPiece, Player aPlayer)
+    public Set<Square> getSafePieceMoves(Piece aPiece, Player aPlayer)
     {
-        Set<Coordinate> pieceMoves = getPieceMoves(aPiece, aPlayer);
-        for (Iterator<Coordinate> iterator = pieceMoves.iterator(); iterator.hasNext();)
+        Set<Square> pieceMoves = getPieceMoves(aPiece, aPlayer);
+        for (Iterator<Square> iterator = pieceMoves.iterator(); iterator.hasNext();)
         {
             // Get a move that aPiece can take, regardless of whether taking that move results in aPlayer being checked.
-            Coordinate possibleMove = iterator.next();
+            Square possibleMove = iterator.next();
 
             // Get the old location of aPiece.
-            Coordinate oldLoc = aPiece.getPosition();
+            Square oldLoc = aPiece.getPosition();
 
             // Get the piece, if it exists, at the location of possibleMove.
             // If the piece exists, it is necessarily an opponent's.
@@ -609,14 +611,14 @@ public class Game {
      * @param aPlayer The player for whom legal moves will be enumerated.
      * @return All legal moves a player can make without putting her king in check.
      */
-    private Set<Coordinate> getAllSafePieceMoves(Player aPlayer)
+    private Set<Square> getAllSafePieceMoves(Player aPlayer)
     {
         List <Piece> playerPieces = aPlayer.getPieces();
-        Set <Coordinate> allSafeMoves = new LinkedHashSet<>();
+        Set <Square> allSafeMoves = new LinkedHashSet<>();
         // Get the safe moves that a player can make, over all of the player's pieces.
         for (Piece playerPiece: playerPieces)
         {
-            Set <Coordinate> safeMovesForPiece = getSafePieceMoves(playerPiece, aPlayer);
+            Set <Square> safeMovesForPiece = getSafePieceMoves(playerPiece, aPlayer);
             allSafeMoves.addAll(safeMovesForPiece);
         }
 
@@ -625,13 +627,13 @@ public class Game {
 
     public boolean isCheckmated(Player aPlayer)
     {
-        Set<Coordinate> allSafeMoves = getAllSafePieceMoves(aPlayer);
+        Set<Square> allSafeMoves = getAllSafePieceMoves(aPlayer);
         return isChecked(aPlayer) && allSafeMoves.isEmpty();
     }
 
     public boolean isStalemated(Player aPlayer)
     {
-        Set<Coordinate> allSafeMoves = getAllSafePieceMoves(aPlayer);
+        Set<Square> allSafeMoves = getAllSafePieceMoves(aPlayer);
         return !isChecked(aPlayer) && allSafeMoves.isEmpty();
 
     }
@@ -646,8 +648,8 @@ public class Game {
     private boolean isBoardLayoutSafe(Player aPlayer)
     {
         Piece aPlayerKing = aPlayer.getKing();
-        Coordinate coorOfKing = aPlayerKing.getPosition();
-        Set <Coordinate> accessibleCoor = new LinkedHashSet<>();
+        Square coorOfKing = aPlayerKing.getPosition();
+        Set <Square> accessibleCoor = new LinkedHashSet<>();
         for (Player playerInst: players)
         {
             // We don't need to consider the set of possible moves for ourselves.

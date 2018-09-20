@@ -1,10 +1,13 @@
+package logic;
+
+import javax.swing.*;
 import java.util.Objects;
 
-public class Coordinate {
+public class Square extends JButton {
 
 
 
-    public Coordinate(int posX, int posY) {
+    public Square(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
     }
@@ -32,7 +35,7 @@ public class Coordinate {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Coordinate that = (Coordinate) o;
+        Square that = (Square) o;
         return posX == that.posX &&
                 posY == that.posY;
     }
@@ -48,14 +51,14 @@ public class Coordinate {
      * @param posY
      * @return An instantiation of coordinate we can use.
      */
-    public static Coordinate getCoordinate(int posX, int posY)
+    public static Square getCoordinate(int posX, int posY)
     {
-        return new Coordinate(posX, posY);
+        return new Square(posX, posY);
     }
 
     @Override
     public String toString() {
-        return "Coordinate{" +
+        return "logic.Square{" +
                 "posX=" + posX +
                 ", posY=" + posY +
                 '}';

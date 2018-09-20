@@ -1,9 +1,11 @@
+package logic;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends Piece {
 
-    public Pawn(Coordinate position, int playerID, boolean north) {
+    public Pawn(Square position, int playerID, boolean north) {
         super(position, playerID, new ArrayList <> ());
         if (north)
         {

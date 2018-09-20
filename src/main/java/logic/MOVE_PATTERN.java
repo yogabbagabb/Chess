@@ -1,3 +1,4 @@
+package logic;
 
 public enum MOVE_PATTERN
 {

@@ -1,4 +1,7 @@
 import junit.framework.TestCase;
+import logic.Square;
+import logic.MOVE_PATTERN;
+import logic.Pawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +12,12 @@ public class PieceInterfacesTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         boolean north = true;
-        p = new Pawn (new Coordinate(1,1), 0, !north);
+        p = new Pawn(new Square(1,1), 0, !north);
     }
 
     public void testGetter()
     {
-        Coordinate pawnCoor = p.getPosition();
+        Square pawnCoor = p.getPosition();
         assertTrue(pawnCoor.getPosX() == 1);
         assertTrue(pawnCoor.getPosY() == 1);
 
@@ -27,7 +30,7 @@ public class PieceInterfacesTest extends TestCase {
 
     public void testSetter()
     {
-        Coordinate pawnCoor = p.getPosition();
+        Square pawnCoor = p.getPosition();
         pawnCoor.setPosX(2);
         pawnCoor.setPosY(2);
         assertTrue(pawnCoor.getPosX() == 2);
@@ -41,7 +44,7 @@ public class PieceInterfacesTest extends TestCase {
         assertTrue(patterns.toString().equals("[SOUTH_NO_KILL]"));
 
         // Add another line for testing setPosition
-        p.setPosition(new Coordinate (4,4));
+        p.setPosition(new Square(4,4));
         pawnCoor = p.getPosition();
         assertTrue(pawnCoor.getPosX() == 4);
         assertTrue(pawnCoor.getPosY() == 4);

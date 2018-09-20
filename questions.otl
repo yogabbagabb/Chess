@@ -1,8 +1,8 @@
 How do we determine the set of available positions that a piece can take on:
-	getPossibleMoves(Piece):
+	getPossibleMoves(logic.Piece):
 	getPossibleMoves(twoPieces):
 	Supposing that we could disregard our opponent checking us, determine the set of possible moves
-	For each Movement enum in the possibleMoves array of a Piece, get a set of coordinates disregarding if a piece obstructs you from going further
+	For each Movement enum in the possibleMoves array of a logic.Piece, get a set of coordinates disregarding if a piece obstructs you from going further
 		See if there is an assert statement here
 		Then starting from the first coordinate to the final coordinate, check to see if a piece occupies any coordinae
 			Later coordinates are disregarded
@@ -40,8 +40,8 @@ Move a piece
 Delete a piece
 
 
-How does the GameManager interact with the Game?
-	The Game Manager sets up a board and does the following:
+How does the GameManager interact with the logic.Game?
+	The logic.Game Manager sets up a board and does the following:
 		While the game hasn't ended:
 			Alternate between players
 				Determine if the player is checkmated or stalemated.

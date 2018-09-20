@@ -1,5 +1,7 @@
+package logic;
+
 /**
- * Board stores the piece (or blank space) at each position of the board.
+ * logic.Board stores the piece (or blank space) at each position of the board.
  */
 public class Board {
 
@@ -23,7 +25,7 @@ public class Board {
         return width;
     }
 
-    public Piece getPieceAtPosition(Coordinate coor)
+    public Piece getPieceAtPosition(Square coor)
     {
         return getPieceAtPosition(coor.getPosX(), coor.getPosY());
     }
@@ -33,7 +35,7 @@ public class Board {
         return piecePositions[xPos][yPos];
     }
 
-    public void setPieceAtPosition(Coordinate coor, Piece replacementPiece)
+    public void setPieceAtPosition(Square coor, Piece replacementPiece)
     {
         setPieceAtPosition(coor.getPosX(), coor.getPosY(), replacementPiece);
     }

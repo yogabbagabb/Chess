@@ -1,18 +1,20 @@
+package logic;
+
 import java.util.List;
 import java.util.Objects;
 
 
 /**
- * Piece is the parent for all actual chess types.
+ * logic.Piece is the parent for all actual chess types.
  */
 public abstract class Piece {
-    private Coordinate position;
+    private Square position;
     private int playerID;
 
 
     private List <MOVE_PATTERN> movePatterns;
 
-    public Piece(Coordinate position, int playerID, List <MOVE_PATTERN> movePatterns)
+    public Piece(Square position, int playerID, List <MOVE_PATTERN> movePatterns)
     {
         this.position = position;
         this.playerID = playerID;
@@ -20,11 +22,11 @@ public abstract class Piece {
     }
 
 
-    public Coordinate getPosition() {
+    public Square getPosition() {
         return position;
     }
 
-    public void setPosition(Coordinate position) {
+    public void setPosition(Square position) {
         this.position = position;
     }
 

@@ -1,4 +1,7 @@
 import junit.framework.TestCase;
+import logic.Board;
+import logic.Game;
+import logic.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +35,17 @@ public class GameTest extends TestCase {
         Player pOne = players.get(0);
         Player pTwo = players.get(1);
 
-        String pOneExpectedRep = "Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=0, king=K }";
-        String pTwoExpectedRep = "Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=1, king=K }";
+        String pOneExpectedRep = "logic.Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=0, king=K }";
+        String pTwoExpectedRep = "logic.Player{pieces=[R , Kn, Bi, Q , K , Bi, Kn, R , P , P , P , P , P , P , P , P ], playerID=1, king=K }";
 
         assertEquals(stripNewlines(pOne.toString()), stripNewlines(pOneExpectedRep));
         assertEquals(stripNewlines(pTwo.toString()), stripNewlines(pTwoExpectedRep));
     }
 
     public void testSetPlayers() {
-        Player newPlayer = new Player (2);
+        Player newPlayer = new Player(2);
         gameInstance.setPlayers(new ArrayList<Player>(List.of(newPlayer)));
-        String expectedOutput =  "[Player{pieces=null, playerID=2, king=null}]";
+        String expectedOutput =  "[logic.Player{pieces=null, playerID=2, king=null}]";
         assertEquals(stripNewlines(gameInstance.getPlayers().toString()), stripNewlines(expectedOutput));
     }
 
