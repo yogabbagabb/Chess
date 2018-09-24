@@ -11,10 +11,46 @@ public class Game {
     private List <Player> players;
     private Board chessBoard;
     private int numPlayers;
+    private int turnParity;
+    static final int PARITY = 4;
 
     public Game(boolean whiteBelow)
     {
         initializeStandardBoard(whiteBelow);
+    }
+    public Game(boolean whiteBelow, boolean addNewPieces)
+    {
+        initializeStandardBoard(whiteBelow);
+        int bottomPlayerID = 0;
+        int topPlayerID;
+
+        // Set the ID of the bottom player to 0 if white is the side at the bottom of the board.
+        bottomPlayerID = whiteBelow? 0 : 1;
+        topPlayerID = bottomPlayerID == 0? 1: 0;
+
+        if (addNewPieces)
+        {
+            int [] playerIDs = {bottomPlayerID, topPlayerID};
+            // Initialize the arrays such that xPiecePos X yPiecePos (in a set theoretic manner) gives us the new positions
+            // being added to
+            int [] xPiecePos = {0,7};
+            int [] yPiecePos = {2, 5};
+            List <Player> playerList = getPlayers();
+            Player [] playerArray = {playerList.get(0), playerList.get(1)};
+            Piece aPiece;
+
+            for (int pIndex = 0; pIndex < numPlayers; ++pIndex)
+            {
+                aPiece = new Duke(new Square(xPiecePos[0], yPiecePos[pIndex]), playerIDs[pIndex]);
+                chessBoard.setPieceAtPosition(xPiecePos[0], yPiecePos[pIndex], aPiece);
+                playerArray[pIndex].addPiece(aPiece);
+
+                aPiece = new Princess(new Square(xPiecePos[1], yPiecePos[pIndex]), playerIDs[pIndex]);
+                chessBoard.setPieceAtPosition(xPiecePos[1], yPiecePos[pIndex], aPiece);
+                playerArray[pIndex].addPiece(aPiece);
+            }
+
+        }
     }
 
     public List<Player> getPlayers() {
@@ -33,11 +69,12 @@ public class Game {
 
     /**
      * Setup a standard chess board.
-     * @param whiteBelow Signals that white pieces the ones closer to the bottom edge of the board if true.
+     * @param whiteBelow Signals that white pieces are the ones closer to the bottom edge of the board if true.
      */
     private void initializeStandardBoard(boolean whiteBelow)
     {
         numPlayers = 2;
+        turnParity = 0;
 
         int boardLength = 8;
         int boardWidth = 8;
@@ -132,6 +169,31 @@ public class Game {
 
     }
 
+    /**
+     * Update the counter (in mod 4) indicating that a move has been made.
+     */
+    private void updateTurnParity()
+    {
+        int movesMade = 1;
+        turnParity += movesMade;
+        turnParity %= PARITY;
+    }
+
+    /**
+     * Update the counter (in mod 4) indicating that a move has been made.
+     */
+    private void resetTurnParity()
+    {
+        int movesMade = 1;
+        turnParity -= movesMade;
+        turnParity %= PARITY;
+    }
+
+    private boolean isEvenTurn()
+    {
+        return turnParity > 1;
+    }
+
 
     /**
      * @param aPiece The piece that will be moved; we assume it exists on the board.
@@ -156,6 +218,7 @@ public class Game {
         // Update the board's record of pieces and the location of the now moved piece.
         chessBoard.setPieceAtPosition(newPosition, aPiece);
         aPiece.setPosition(newPosition);
+        updateTurnParity();
     }
 
     /**
@@ -480,6 +543,19 @@ public class Game {
                 // Get the possible coordinates that a king can take on.
                 pieceMovesToAdd.addAll(getMoves_oneAnywhere(aPiece, aPlayer));
                 break;
+            case RANDOM_EAST:
+                if (isEvenTurn() && isValidAndEnemyOccupied(aPlayer, curX + 1, curY))
+                {
+                    pieceMovesToAdd.add(Square.getCoordinate(curX + 1, curY));
+                }
+                break;
+            case RANDOM_WEST:
+                if (isEvenTurn() && isValidAndEnemyOccupied(aPlayer, curX - 1, curY))
+                {
+                    pieceMovesToAdd.add(Square.getCoordinate(curX - 1, curY));
+                }
+                break;
+
         }
 
         return pieceMovesToAdd;
@@ -578,6 +654,7 @@ public class Game {
                 // Remove our oppponent's piece temporarily
                 deletePiece(pieceAtMoveLoc, possibleMove);
                 movePiece(aPiece, possibleMove);
+                resetTurnParity();
 
                 if (isChecked(aPlayer))
                 {
@@ -585,6 +662,7 @@ public class Game {
                 }
 
                 movePiece(aPiece, oldLoc);
+                resetTurnParity();
                 // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }

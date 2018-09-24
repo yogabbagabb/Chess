@@ -64,6 +64,12 @@ public class BoardView {
         options.setFloatable(false);
         options.add(new JButton ("Deselect Piece"));
         options.addSeparator();
+        options.add(new JButton ("Move Back"));
+        options.addSeparator();
+        options.add(new JButton ("Forfeit"));
+        options.addSeparator();
+        options.add(new JButton ("Skip Turn"));
+        options.addSeparator();
         options.add(new JLabel ("Turn: White"));
         optionsPanel.add(options);
     }

@@ -106,6 +106,14 @@ public abstract class Piece {
         {
             return "Q ";
         }
+        else if (this instanceof Princess)
+        {
+            return "Pr";
+        }
+        else if (this instanceof Duke)
+        {
+            return "D ";
+        }
         else
         {
             return "K ";
