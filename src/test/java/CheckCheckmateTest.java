@@ -34,6 +34,8 @@ public class CheckCheckmateTest extends TestCase {
         Piece pawnOne = board.getPieceAtPosition(5,1);
         gameInstance.movePiece(pawnOne, Square.getCoordinate(5,3) );
 
+        assertFalse(gameInstance.isCheckmated(players.get(1)));
+        assertFalse(gameInstance.isStalemated(players.get(1)));
         assertFalse(gameInstance.isCheckmated(players.get(0)));
         assertFalse(gameInstance.isStalemated(players.get(0)));
 
@@ -41,12 +43,16 @@ public class CheckCheckmateTest extends TestCase {
         Piece pawnTwo = board.getPieceAtPosition(4,6);
         gameInstance.movePiece(pawnTwo, Square.getCoordinate(4,4) );
 
+        assertFalse(gameInstance.isCheckmated(players.get(1)));
+        assertFalse(gameInstance.isStalemated(players.get(1)));
         assertFalse(gameInstance.isCheckmated(players.get(0)));
         assertFalse(gameInstance.isStalemated(players.get(0)));
 
         Piece pawnThree = board.getPieceAtPosition(6,1);
         gameInstance.movePiece(pawnThree, Square.getCoordinate(6,3) );
 
+        assertFalse(gameInstance.isCheckmated(players.get(1)));
+        assertFalse(gameInstance.isStalemated(players.get(1)));
         assertFalse(gameInstance.isCheckmated(players.get(0)));
         assertFalse(gameInstance.isStalemated(players.get(0)));
 

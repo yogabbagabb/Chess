@@ -30,6 +30,7 @@ public class BoardView {
         chessBoardLength = length;
         chessBoardSquares = new Square[chessBoardWidth][chessBoardLength];
         this.boardController = boardController;
+        boardController.setChessBoardSquares(chessBoardSquares);
 
         initializeFrame();
         initializeOptions();
@@ -46,7 +47,7 @@ public class BoardView {
         return chessBoardSquares[xCoor][yCoor];
     }
 
-    public void initializeFrame()
+    private void initializeFrame()
     {
         frame = new JFrame("Chess Game");
         // Destroy the current window; if the current window is the only window, close the Java VM
@@ -56,7 +57,7 @@ public class BoardView {
     /**
      * Set up the options panel.
      */
-    public void initializeOptions()
+    private void initializeOptions()
     {
         optionsPanel = new JPanel();
 //        optionsPanel.setLayout(new BoxLayout (optionsPanel, BoxLayout.LINE_AXIS));
@@ -77,7 +78,7 @@ public class BoardView {
     /**
      * Set up the board panel.
      */
-    public void initializeBoard()
+    private void initializeBoard()
     {
         chessBoardPanel = new JPanel(new GridLayout(0,8));
 //        Dimension aSize = chessBoardPanel.getPreferredSize();
@@ -98,6 +99,8 @@ public class BoardView {
                 square.setEnabled(true);
                 square.setText(boardController.getText(square));
                 square.setFont(WRITING_FONT);
+                square.setActionCommand(Integer.toString(horCounter) + "," + Integer.toString(verCounter));
+                square.addActionListener(boardController);
 //                Font buttonFont = square.getFont();
 //                System.out.println(buttonFont.getName());
 //                square.setText("\u265A");

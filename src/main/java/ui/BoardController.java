@@ -6,10 +6,13 @@ import logic.Piece;
 import logic.Square;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class BoardController {
+public class BoardController implements ActionListener {
 
     private Game game;
+    private Square [][] chessBoardSquares;
 
     public BoardController(Game game)
     {
@@ -46,5 +49,20 @@ public class BoardController {
         };
 
         SwingUtilities.invokeLater(r);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Hit");
+        System.out.println(e.getActionCommand());
+
+    }
+
+    public Square[][] getChessBoardSquares() {
+        return chessBoardSquares;
+    }
+
+    public void setChessBoardSquares(Square[][] chessBoardSquares) {
+        this.chessBoardSquares = chessBoardSquares;
     }
 }
