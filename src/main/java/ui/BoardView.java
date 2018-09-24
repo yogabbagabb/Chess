@@ -1,18 +1,17 @@
 package ui;
 
 
-import logic.Board;
 import logic.Square;
 import logic.Game;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class BoardView {
     private JFrame frame;
     private JPanel optionsPanel;// = new JPanel(new BorderLayout(2,2));
-    private Board chessBoard;
+    private int chessBoardWidth;
+    private int chessBoardLength;
     private JPanel chessBoardPanel;
     private Square[][] chessBoardSquares;
     private final Color JADE = new Color(51, 153, 102);
@@ -20,10 +19,17 @@ public class BoardView {
     private final Color[] boardColors = {JADE, MANILA};
     private final int numBoardColors = boardColors.length;
 
-    public BoardView(Board chessBoard)
+    static final int FONT_SIZE = 60;
+    static final Font WRITING_FONT = new Font("Lucida Grande", Font.PLAIN, FONT_SIZE);
+    private BoardController boardController;
+
+
+    public BoardView(int width, int length, BoardController boardController)
     {
-        this.chessBoard = chessBoard;
-        chessBoardSquares = new Square[chessBoard.getWidth()][chessBoard.getLength()];
+        chessBoardWidth = width;
+        chessBoardLength = length;
+        chessBoardSquares = new Square[chessBoardWidth][chessBoardLength];
+        this.boardController = boardController;
 
         initializeFrame();
         initializeOptions();
@@ -34,6 +40,10 @@ public class BoardView {
     public JFrame getFrame()
     {
         return frame;
+    }
+    public Square getSquare(int xCoor, int yCoor)
+    {
+        return chessBoardSquares[xCoor][yCoor];
     }
 
     public void initializeFrame()
@@ -64,23 +74,40 @@ public class BoardView {
     public void initializeBoard()
     {
         chessBoardPanel = new JPanel(new GridLayout(0,8));
-        for (int verCounter = chessBoard.getLength()-1; verCounter >= 0; --verCounter)
+//        Dimension aSize = chessBoardPanel.getPreferredSize();
+//        int aMinDimension = (aSize.height < aSize.width ? aSize.height : aSize.width);
+//        System.out.println(aSize.height + " " + aSize.width);
+//        chessBoardPanel.setPreferredSize(new Dimension(aMinDimension + 10,aMinDimension + 10));
+        for (int verCounter = chessBoardLength-1; verCounter >= 0; --verCounter)
         {
-            for (int horCounter = 0; horCounter < chessBoard.getWidth(); ++horCounter)
+            for (int horCounter = 0; horCounter < chessBoardWidth; ++horCounter)
             {
                 // Choose the leftmost color of row vertCounter, by choosing the offset in array
                 int offsetFirstColor = verCounter % 2;
                 Square square = new Square (horCounter, verCounter);
                 int colorIndex = (offsetFirstColor + horCounter) % 2;
-                square.setBorder(new LineBorder(Color.BLACK));
                 square.setBackground(boardColors[colorIndex]);
                 square.setOpaque(true);
-                square.setPreferredSize(new Dimension (20,20));
+                square.setBorderPainted(false);
+                square.setEnabled(true);
+                square.setText(boardController.getText(square));
+                square.setFont(WRITING_FONT);
+//                Font buttonFont = square.getFont();
+//                System.out.println(buttonFont.getName());
+//                square.setText("\u265A");
+//                square.setFont(new Font(buttonFont.getName(), Font.PLAIN, 60));
+
+//                Dimension size = square.getPreferredSize();
+//                int minDimension = (size.height < size.width ? size.height : size.width);
+//                System.out.println(size.height + " " + size.width);
+//                square.setPreferredSize(new Dimension(minDimension,minDimension));
+
                 chessBoardSquares[horCounter][verCounter] = square;
                 chessBoardPanel.add(square);
 
             }
         }
+
 
     }
 
@@ -93,23 +120,14 @@ public class BoardView {
         frame.add(chessBoardPanel, BorderLayout.CENTER);
     }
 
-
-    public static void main (String [] args)
+    public void displayGame()
     {
-        Runnable r = () -> {
-            Game aGame = new Game(true);
-            BoardView boardUI = new BoardView(aGame.getChessBoard());
-
-            // Get back the now initialized frame so that we can display it
-            Frame frame = boardUI.getFrame();
-            frame.pack();
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//            frame.setUndecorated(true);
-            frame.setVisible(true);
-        };
-
-        SwingUtilities.invokeLater(r);
+        frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
     }
+
+
 
 
 
