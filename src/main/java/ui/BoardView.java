@@ -43,6 +43,9 @@ public class BoardView {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Set up the options panel.
+     */
     public void initializeOptions()
     {
         optionsPanel = new JPanel();
@@ -55,6 +58,9 @@ public class BoardView {
         optionsPanel.add(options);
     }
 
+    /**
+     * Set up the board panel.
+     */
     public void initializeBoard()
     {
         chessBoardPanel = new JPanel(new GridLayout(0,8));
@@ -69,6 +75,7 @@ public class BoardView {
                 square.setBorder(new LineBorder(Color.BLACK));
                 square.setBackground(boardColors[colorIndex]);
                 square.setOpaque(true);
+                square.setPreferredSize(new Dimension (20,20));
                 chessBoardSquares[horCounter][verCounter] = square;
                 chessBoardPanel.add(square);
 
@@ -77,6 +84,9 @@ public class BoardView {
 
     }
 
+    /**
+     * Add the options panel and board panel to the main frame.
+     */
     private void addTopComponents()
     {
         frame.add(optionsPanel, BorderLayout.NORTH);
