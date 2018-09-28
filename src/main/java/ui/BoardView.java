@@ -1,7 +1,6 @@
 package ui;
 
 
-import logic.Square;
 import logic.Game;
 
 import javax.swing.*;
@@ -13,7 +12,7 @@ public class BoardView {
     private int chessBoardWidth;
     private int chessBoardLength;
     private JPanel chessBoardPanel;
-    private Square[][] chessBoardSquares;
+    private BoardSquare[][] chessBoardBoardSquares;
     private final Color JADE = new Color(51, 153, 102);
     private final Color MANILA = new Color(255, 255, 179);
     private final Color[] boardColors = {JADE, MANILA};
@@ -28,9 +27,9 @@ public class BoardView {
     {
         chessBoardWidth = width;
         chessBoardLength = length;
-        chessBoardSquares = new Square[chessBoardWidth][chessBoardLength];
+        chessBoardBoardSquares = new BoardSquare[chessBoardWidth][chessBoardLength];
         this.boardController = boardController;
-        boardController.setChessBoardSquares(chessBoardSquares);
+        boardController.setChessBoardBoardSquares(chessBoardBoardSquares);
 
         initializeFrame();
         initializeOptions();
@@ -42,9 +41,9 @@ public class BoardView {
     {
         return frame;
     }
-    public Square getSquare(int xCoor, int yCoor)
+    public BoardSquare getBoardSquare(int xCoor, int yCoor)
     {
-        return chessBoardSquares[xCoor][yCoor];
+        return chessBoardBoardSquares[xCoor][yCoor];
     }
 
     private void initializeFrame()
@@ -91,7 +90,7 @@ public class BoardView {
             {
                 // Choose the leftmost color of row vertCounter, by choosing the offset in array
                 int offsetFirstColor = verCounter % 2;
-                Square square = new Square (horCounter, verCounter);
+                BoardSquare square = new BoardSquare (horCounter, verCounter);
                 int colorIndex = (offsetFirstColor + horCounter) % 2;
                 square.setBackground(boardColors[colorIndex]);
                 square.setOpaque(true);
@@ -111,7 +110,7 @@ public class BoardView {
 //                System.out.println(size.height + " " + size.width);
 //                square.setPreferredSize(new Dimension(minDimension,minDimension));
 
-                chessBoardSquares[horCounter][verCounter] = square;
+                chessBoardBoardSquares[horCounter][verCounter] = square;
                 chessBoardPanel.add(square);
 
             }

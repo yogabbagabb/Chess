@@ -13,6 +13,8 @@ public class Game {
     private int numPlayers;
     private int turnParity;
     static final int PARITY = 4;
+    private int currentPlayerID;
+    private Piece currentPiece;
 
     public Game(boolean whiteBelow)
     {
@@ -73,6 +75,7 @@ public class Game {
      */
     private void initializeStandardBoard(boolean whiteBelow)
     {
+        currentPlayerID = 0;
         numPlayers = 2;
         turnParity = 0;
 
@@ -170,6 +173,23 @@ public class Game {
     }
 
     /**
+     * Change the current player to the current player's opponent and the parity to be one more than what it is.
+     */
+    private void updateTurnStats()
+    {
+        updateTurnParity();
+        updatePlayer();
+    }
+
+    /**
+     * Switch players
+     */
+    private void updatePlayer()
+    {
+       currentPlayerID = currentPlayerID == 0? 1: 0;
+    }
+
+    /**
      * Update the counter (in mod 4) indicating that a move has been made.
      */
     private void updateTurnParity()
@@ -180,6 +200,14 @@ public class Game {
     }
 
     /**
+     * Change the current player to the current player's opponent and the parity to be one less than what it is.
+     */
+    private void resetTurnStats()
+    {
+        resetTurnParity();
+        resetPlayer();
+    }
+    /**
      * Update the counter (in mod 4) indicating that a move has been made.
      */
     private void resetTurnParity()
@@ -187,6 +215,11 @@ public class Game {
         int movesMade = 1;
         turnParity -= movesMade;
         turnParity %= PARITY;
+    }
+
+    private void resetPlayer()
+    {
+        currentPlayerID = currentPlayerID == 0? 1: 0;
     }
 
     private boolean isEvenTurn()
@@ -218,7 +251,7 @@ public class Game {
         // Update the board's record of pieces and the location of the now moved piece.
         chessBoard.setPieceAtPosition(newPosition, aPiece);
         aPiece.setPosition(newPosition);
-        updateTurnParity();
+        updateTurnStats();
     }
 
     /**
@@ -635,6 +668,18 @@ public class Game {
      */
     public Set<Square> getSafePieceMoves(Piece aPiece, Player aPlayer)
     {
+        if (aPiece == null)
+        {
+            return null;
+        }
+
+        // Check to see that the current piece does in fact belong to the player.
+        if (aPiece.getPlayerID() != aPlayer.getPlayerID())
+        {
+            throw new RuntimeException("The piece does not match the player");
+        }
+        currentPiece = aPiece;
+
         Set<Square> pieceMoves = getPieceMoves(aPiece, aPlayer);
         for (Iterator<Square> iterator = pieceMoves.iterator(); iterator.hasNext();)
         {
@@ -654,7 +699,7 @@ public class Game {
                 // Remove our oppponent's piece temporarily
                 deletePiece(pieceAtMoveLoc, possibleMove);
                 movePiece(aPiece, possibleMove);
-                resetTurnParity();
+                resetTurnStats();
 
                 if (isChecked(aPlayer))
                 {
@@ -662,7 +707,7 @@ public class Game {
                 }
 
                 movePiece(aPiece, oldLoc);
-                resetTurnParity();
+                resetTurnStats();
                 // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }

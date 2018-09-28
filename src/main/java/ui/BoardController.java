@@ -3,7 +3,6 @@ package ui;
 import logic.Board;
 import logic.Game;
 import logic.Piece;
-import logic.Square;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,25 +11,25 @@ import java.awt.event.ActionListener;
 public class BoardController implements ActionListener {
 
     private Game game;
-    private Square [][] chessBoardSquares;
+    private BoardSquare [][] chessBoardBoardSquares;
 
     public BoardController(Game game)
     {
         this.game = game;
     }
 
-    public String getText(Square square)
+    public String getText(BoardSquare square)
     {
         Board gameBoard = game.getChessBoard();
-        Piece pieceAtSquare = gameBoard.getPieceAtPosition(square.getPosX(), square.getPosY());
+        Piece pieceAtBoardSquare = gameBoard.getPieceAtPosition(square.getPosX(), square.getPosY());
         String squareText;
-        if (pieceAtSquare == null)
+        if (pieceAtBoardSquare == null)
         {
             squareText = "";
         }
         else
         {
-            squareText = pieceAtSquare.getIconUnicodeString();
+            squareText = pieceAtBoardSquare.getIconUnicodeString();
         }
         return squareText;
 
@@ -58,11 +57,11 @@ public class BoardController implements ActionListener {
 
     }
 
-    public Square[][] getChessBoardSquares() {
-        return chessBoardSquares;
+    public BoardSquare[][] getChessBoardBoardSquares() {
+        return chessBoardBoardSquares;
     }
 
-    public void setChessBoardSquares(Square[][] chessBoardSquares) {
-        this.chessBoardSquares = chessBoardSquares;
+    public void setChessBoardBoardSquares(BoardSquare[][] chessBoardBoardSquares) {
+        this.chessBoardBoardSquares = chessBoardBoardSquares;
     }
 }
