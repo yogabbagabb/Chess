@@ -109,7 +109,12 @@ public class BoardController{
     public static void main (String [] args)
     {
         Runnable r = () -> {
-            Game aGame = new Game(true);
+
+            int optionChosen = JOptionPane.showOptionDialog(null, "What type of game do you want to play?", "Game Selection",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String [] {"Regular Game", "Aahan's Game"}, null);
+
+            boolean augmentedGame = optionChosen == 1? true: false;
+            Game aGame = new Game(true, augmentedGame);
             BoardController boardController = new BoardController(aGame);
             Board gameBoard = aGame.getChessBoard();
             BoardView boardView = new BoardView(gameBoard.getWidth(), gameBoard.getLength(), boardController);

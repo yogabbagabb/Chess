@@ -253,11 +253,11 @@ public class Game {
      *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
      *                    we assume it is an enemy.
      */
-    private void movePieceConditionally(Piece aPiece, Square newPosition)
+    private Piece movePieceConditionally(Piece aPiece, Square newPosition)
     {
         Piece formerCurrentPiece = currentPiece;
         movePiece(aPiece, newPosition);
-        resetTurnStats(formerCurrentPiece);
+        return formerCurrentPiece;
     }
     /**
      * @param aPiece The piece that will be moved; we assume it exists on the board.
@@ -872,29 +872,32 @@ public class Game {
                 // If we enter here, then the piece belongs to an opponent.
                 // Remove our oppponent's piece temporarily
 
-                // I am leaving this here for fear that it might actually be useful
-//                deletePiece(pieceAtMoveLoc, possibleMove);
-                movePieceConditionally(aPiece, possibleMove);
+                Piece formerCurrentPiece;
+                formerCurrentPiece = movePieceConditionally(aPiece, possibleMove);
 
                 if (isChecked(aPlayer))
                 {
                     iterator.remove();
                 }
+                resetTurnStats(formerCurrentPiece);
 
-                movePieceConditionally(aPiece, oldLoc);
+                formerCurrentPiece = movePieceConditionally(aPiece, oldLoc);
+                resetTurnStats(formerCurrentPiece);
                 // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }
             else
             {
-                movePieceConditionally(aPiece, possibleMove);
+                Piece formerCurrentPiece = movePieceConditionally(aPiece, possibleMove);
+                resetTurnStats(formerCurrentPiece);
 
                 if (isChecked(aPlayer))
                 {
                     iterator.remove();
                 }
 
-                movePieceConditionally(aPiece, oldLoc);
+                formerCurrentPiece = movePieceConditionally(aPiece, oldLoc);
+                resetTurnStats(formerCurrentPiece);
             }
 
 
@@ -957,11 +960,14 @@ public class Game {
 
             // Make a container to contain all possible moves that opponent(s) can take on with some piece
             List <Piece> playerInstPieces = playerInst.getPieces();
+            Piece formerCurrentPiece = currentPiece;
+            updateTurnStats();
             for (Piece aPiece: playerInstPieces)
             {
                 // Add all possible moves for a particular opponent piece to our container
                accessibleCoor.addAll(getPieceMoves(aPiece, playerInst));
             }
+            resetTurnStats(formerCurrentPiece);
         }
 
 

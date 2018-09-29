@@ -95,7 +95,8 @@ public class BoardView {
 
     public void confirmForfeitChoice()
     {
-       int optionChosen = JOptionPane.showOptionDialog(frame, "Who wants to lose the game: Black or White?", "Forfeit", JOptionPane.YES_NO_CANCEL_OPTION,
+        // TODO: This might have been fucked up
+       int optionChosen = JOptionPane.showOptionDialog(frame, "Who wants to lose the game: Black or White?", "Forfeit", JOptionPane.YES_NO_OPTION,
                JOptionPane.QUESTION_MESSAGE, null, new String [] {"White", "Black"}, null);
 
        boardController.relayForfeit(optionChosen);
@@ -154,6 +155,7 @@ public class BoardView {
         }
 
         updatePiecesOnSquares(allSquareList);
+        restoreOriginalColors(allSquareList);
     }
 
     public void addDropPieceListener(ActionListener actionListener)
