@@ -179,6 +179,7 @@ public class Game {
     {
         updateTurnParity();
         updatePlayer();
+        currentPiece = null;
     }
 
     /**
@@ -202,10 +203,11 @@ public class Game {
     /**
      * Change the current player to the current player's opponent and the parity to be one less than what it is.
      */
-    private void resetTurnStats()
+    private void resetTurnStats(Piece formerCurrentPiece)
     {
         resetTurnParity();
         resetPlayer();
+        currentPiece = formerCurrentPiece;
     }
     /**
      * Update the counter (in mod 4) indicating that a move has been made.
@@ -659,6 +661,74 @@ public class Game {
     }
 
 
+    private static int EMPTY_SQUARE = 0;
+    private static int WRONG_OWNER = 1;
+    private static int VALID_SELECTION = 2;
+    private static int VALID_MOVE = 3;
+    private static int INACCESSIBLE = 4;
+    /**
+     * Take interest in a position, after determining if the position is somehow accessible in the current
+     * state of the game. "Accessibility" is positive if one of the following is true: the current piece can
+     * move to the position, or if the current piece has not yet been selected, check that
+     * the current piece can be set to be the piece at the position. This function essentially performs checks.
+     * @param xPos
+     * @param yPos
+     * @return
+     */
+    public int showInterestInPos(int xPos, int yPos)
+    {
+        if (currentPiece == null)
+        {
+            Piece pieceAtPosition = chessBoard.getPieceAtPosition(xPos, yPos);
+            // We have not yet selected a piece and we just showed interest in an empty square
+            if ( pieceAtPosition == null)
+            {
+                // Do nothing.
+                return EMPTY_SQUARE;
+            }
+
+            // The player owning the piece at the location of interest does not belong to
+            // the current player and the current player hasn't yet selected a piece of her own
+            else if(pieceAtPosition.getPlayerID() != currentPlayerID)
+            {
+               // TODO: Create a dialog telling the current player that the piece isn't his
+                return WRONG_OWNER;
+            }
+
+            else
+            {
+                // Set the current piece to be the one at the position
+                currentPiece = pieceAtPosition;
+                // TODO: Update the view with those squares that are accessible from the current piece.
+                return VALID_SELECTION;
+            }
+
+        }
+        else
+        {
+            Piece pieceAtPos = chessBoard.getPieceAtPosition(xPos, yPos);
+            Player playerOfPiece = players.get(pieceAtPos.getPlayerID());
+            Set<Square> safeSquares = getSafePieceMoves(pieceAtPos, playerOfPiece);
+
+            // The square is accessible by the current player
+            if (safeSquares.contains(Square.getCoordinate(xPos, yPos)))
+            {
+                movePiece(pieceAtPos, Square.getCoordinate(xPos, yPos));
+                // TODO: Update the view with information that some chess squares must change their text.
+                return VALID_MOVE;
+            }
+
+            else
+            {
+                // TODO: Update the view with a message explaining that the position cannot be accessed.
+                return INACCESSIBLE;
+            }
+
+        }
+
+    }
+
+
     /**
      * Enumerate those coordinates that a piece can go to without causing its player to become checked.
      * @param aPiece The piece whose set of moves from possibleMoves we will refine.
@@ -668,17 +738,6 @@ public class Game {
      */
     public Set<Square> getSafePieceMoves(Piece aPiece, Player aPlayer)
     {
-        if (aPiece == null)
-        {
-            return null;
-        }
-
-        // Check to see that the current piece does in fact belong to the player.
-        if (aPiece.getPlayerID() != aPlayer.getPlayerID())
-        {
-            throw new RuntimeException("The piece does not match the player");
-        }
-        currentPiece = aPiece;
 
         Set<Square> pieceMoves = getPieceMoves(aPiece, aPlayer);
         for (Iterator<Square> iterator = pieceMoves.iterator(); iterator.hasNext();)
@@ -699,7 +758,8 @@ public class Game {
                 // Remove our oppponent's piece temporarily
                 deletePiece(pieceAtMoveLoc, possibleMove);
                 movePiece(aPiece, possibleMove);
-                resetTurnStats();
+                Piece formerCurrentPiece = currentPiece;
+                resetTurnStats(formerCurrentPiece);
 
                 if (isChecked(aPlayer))
                 {
@@ -707,7 +767,8 @@ public class Game {
                 }
 
                 movePiece(aPiece, oldLoc);
-                resetTurnStats();
+                formerCurrentPiece = currentPiece;
+                resetTurnStats(formerCurrentPiece);
                 // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }
