@@ -20,6 +20,10 @@ public abstract class Piece {
     static final String BLACK_QUEEN = "\u265B";
     static final String WHITE_KING = "\u2654";
     static final String BLACK_KING = "\u265A";
+    static final String WHITE_DUKE = "\u2662";
+    static final String BLACK_DUKE = "\u2666";
+    static final String WHITE_PRINCESS = "\u2661";
+    static final String BLACK_PRINCESS = "\u2665";
     private Square position;
     private int playerID;
     private String iconUnicodeString;

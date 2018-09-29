@@ -6,6 +6,7 @@ import logic.Square;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,12 @@ public class BoardView {
     private JButton undoButton;
     private JButton forfeitButton;
     private JLabel turnLabel;
+
+    //Score Label
+    private JLabel whiteScoreLabel;
+    private JLabel blackScoreLabel;
+    private final String whiteScorePreface = "White Score: ";
+    private final String blackScorePreface = "Black Score: ";
 
     public BoardView(int width, int length, BoardController boardController)
     {
@@ -86,6 +93,16 @@ public class BoardView {
 
     }
 
+    public void confirmForfeitChoice()
+    {
+       int optionChosen = JOptionPane.showOptionDialog(frame, "Who wants to lose the game: Black or White?", "Forfeit", JOptionPane.YES_NO_CANCEL_OPTION,
+               JOptionPane.QUESTION_MESSAGE, null, new String [] {"White", "Black"}, null);
+
+       boardController.relayForfeit(optionChosen);
+
+
+    }
+
     public void showWrongPlayerDialog()
     {
         JOptionPane.showMessageDialog(frame, "That's not your piece dumbass.");
@@ -99,6 +116,15 @@ public class BoardView {
     public void showEndStateDialog(String endStateString)
     {
         JOptionPane.showMessageDialog(frame, endStateString);
+    }
+
+    public void showGameRenewalDialog()
+    {
+        int optionChosen = JOptionPane.showOptionDialog(frame, "Play another game?", "Player Again",JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+        int yesOption = 0;
+        boardController.relayRenewalChoice(optionChosen == yesOption? true: false);
     }
 
     public void changePlayer(int currentPlayerID)
@@ -118,10 +144,29 @@ public class BoardView {
         }
     }
 
+    public void resetBoard()
+    {
+        Set <Square> allSquareList = new LinkedHashSet<>();
+        for (int verCounter = chessBoardLength-1; verCounter >= 0; --verCounter) {
+            for (int horCounter = 0; horCounter < chessBoardWidth; ++horCounter) {
+               allSquareList.add(Square.getCoordinate(horCounter,verCounter));
+            }
+        }
+
+        updatePiecesOnSquares(allSquareList);
+    }
+
     public void addDropPieceListener(ActionListener actionListener)
     {
         deselectButton.addActionListener(actionListener);
     }
+
+    public void addForfeitInitiationListener(ActionListener actionListener)
+    {
+        forfeitButton.addActionListener(actionListener);
+    }
+
+
 
     public JFrame getFrame()
     {
@@ -158,22 +203,31 @@ public class BoardView {
         options.addSeparator();
 
         forfeitButton = new JButton("Forfeit");
+
         options.add(forfeitButton);
         options.addSeparator();
 
         turnLabel = new JLabel("Turn: White");
         options.add(turnLabel);
-        options.addSeparator();
+        int distanceApart = 30;
+        int height = 0;
+        options.addSeparator(new Dimension(distanceApart, height));
 
         String whiteName = JOptionPane.showInputDialog("White: Please give me your name");
         String blackName = JOptionPane.showInputDialog("Black: Please give me your name");
         boardController.setPlayerNames(List.of(whiteName, blackName));
-        int distanceApart = 15;
-        int height = 0;
         options.addSeparator(new Dimension(distanceApart, height));
         options.add(new JLabel("White: " + whiteName));
         options.addSeparator();
         options.add(new JLabel("Black: " + blackName));
+
+        options.addSeparator(new Dimension(distanceApart, height));
+        whiteScoreLabel = new JLabel (whiteScorePreface + Integer.toString(boardController.getWhiteScore()));
+        blackScoreLabel = new JLabel (blackScorePreface + Integer.toString(boardController.getBlackScore()));
+        options.add(whiteScoreLabel);
+        options.addSeparator();
+        options.add(blackScoreLabel);
+
 
         optionsPanel.add(options);
     }
@@ -186,6 +240,12 @@ public class BoardView {
     {
         Color colorToChoose = ((horCounter + verCounter) % 2 == 0? JADE: MANILA);
         return colorToChoose;
+    }
+
+    public void updateScore()
+    {
+        whiteScoreLabel.setText(whiteScorePreface + Integer.toString(boardController.getWhiteScore()));
+        blackScoreLabel.setText(blackScorePreface + Integer.toString(boardController.getBlackScore()));
     }
 
     /**

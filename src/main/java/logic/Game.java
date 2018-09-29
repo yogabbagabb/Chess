@@ -13,13 +13,23 @@ public class Game {
     private List <Player> players;
     private List <String> playerNames;
     private Board chessBoard;
+    private int whiteScore;
+    private int blackScore;
     private int numPlayers;
     private int turnParity;
     static final int PARITY = 4;
+    static final int WHITE_ID = 0;
+    static final int BLACK_ID = 1;
     private int currentPlayerID;
     private Piece currentPiece;
     private BoardView boardView;
 
+    public Game (boolean whitebelow, boolean addNewPieces, int whiteScore, int blackScore)
+    {
+       this(whitebelow, addNewPieces);
+       this.whiteScore = whiteScore;
+       this.blackScore = blackScore;
+    }
     public Game(boolean whiteBelow)
     {
         initializeStandardBoard(whiteBelow);
@@ -82,6 +92,8 @@ public class Game {
         currentPlayerID = 0;
         numPlayers = 2;
         turnParity = 0;
+        whiteScore = 0;
+        blackScore = 0;
 
         int boardLength = 8;
         int boardWidth = 8;
@@ -765,32 +777,28 @@ public class Game {
     private void checkForEndStates()
     {
         Player currentPlayer = players.get(currentPlayerID);
-        int whiteID = 0;
-        String colorOfCurrentPlayer =  currentPlayerID == whiteID? "White" : "Black";
-        String endStateString = "Player with " + colorOfCurrentPlayer + "pieces: ";
-        boolean endStateDetected = false;
+        String colorOfCurrentPlayer =  currentPlayerID == WHITE_ID? "White" : "Black";
+        String endStateString = "Player with " + colorOfCurrentPlayer + " pieces: ";
 
         if(isCheckmated(currentPlayer))
         {
-            endStateDetected = true;
             endStateString += "You're checkmated!";
+            boardView.showEndStateDialog(endStateString);
+            loseGame(currentPlayerID);
         }
         else if(isStalemated(currentPlayer))
         {
-            endStateDetected = true;
-            endStateString += "You're stalemated";
+            endStateString += "You're stalemated!";
+            boardView.showEndStateDialog(endStateString);
+            loseGame(currentPlayerID);
         }
         else if(isChecked(currentPlayer))
         {
-            endStateDetected = true;
-            endStateString += "You're checked";
-        }
-
-
-        if  (endStateDetected)
-        {
+            endStateString += "You're checked!";
             boardView.showEndStateDialog(endStateString);
         }
+
+
 
     }
     /**
@@ -808,6 +816,30 @@ public class Game {
             }
         }
         boardView.restoreOriginalColors(boardSquareSet);
+    }
+
+    public void prepareToForfeit()
+    {
+        boardView.confirmForfeitChoice();
+    }
+
+    /**
+     * Cause a side to lose the game.
+     * @param sideToLose The side that will lose the game.
+     */
+    public void loseGame(int sideToLose)
+    {
+        if (sideToLose == WHITE_ID)
+        {
+            blackScore += 1;
+        }
+        else
+        {
+            whiteScore += 1;
+        }
+
+        boardView.updateScore();
+        boardView.showGameRenewalDialog();
     }
 
 
@@ -951,12 +983,30 @@ public class Game {
         this.boardView = boardView;
     }
 
+    public void setOldBoardView(Game oldGame) {
+        this.boardView = oldGame.getBoardView();
+    }
+
+    public void reset()
+    {
+        boardView.resetBoard();
+    }
+
+
     public List<String> getPlayerNames() {
         return playerNames;
     }
 
     public void setPlayerNames(List<String> playerNames) {
         this.playerNames = playerNames;
+    }
+
+    public int getBlackScore() {
+        return blackScore;
+    }
+
+    public int getWhiteScore() {
+        return whiteScore;
     }
 }
 

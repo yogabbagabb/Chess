@@ -1,13 +1,10 @@
 Things to Implement:
-	Add current player and current Piece and the observer interface to Game
-	Change getSafePieceMoves to:
-		issue a failure if the current piece doesn't belong to the player playing
-		set the current piece to the piece whose information is currently being requested
-		if the current piece is null then do nothing (we will later change this)
+	Test if we can play the extended game (with my customized pieces)
+	Add infrastructure to begin a new game after one player loses
+		Test to see if we can begin a new game this way
+	Add infrastructure to begin a new game with customization
+	Add infrastructure for ocmplete resetting
 
-	See if we can highlight certain tiles even if a piece is above them.
 
-	Add addListener methods to the view class
-	make the controller class implement some of these methods
 		
 	

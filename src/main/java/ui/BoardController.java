@@ -19,6 +19,10 @@ public class BoardController{
         this.game = game;
     }
 
+    /**
+     * Add listeners to the buttons in the UI that a player can interact with.
+     * @param boardView The UI (view) exposed to a player.
+     */
     public void addListeners(BoardView boardView)
     {
         boardView.addSquareListeners(e -> {
@@ -28,8 +32,47 @@ public class BoardController{
 
         boardView.addDropPieceListener(e -> game.dropPiece());
 
+        boardView.addForfeitInitiationListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.prepareToForfeit();
+            }
+        });
+
+
     }
 
+    public void relayRenewalChoice(boolean renew)
+    {
+        if (renew == true)
+        {
+            Game oldGame = this.game;
+            Game aGame = new Game (true, false, oldGame.getWhiteScore(), oldGame.getBlackScore());
+            this.game = aGame;
+
+            aGame.setOldBoardView(oldGame);
+            aGame.reset();
+        }
+        else
+        {
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Pass to game the side that chose to loseGame
+     * @param sideChosen The side that chooses to loseGame. The side is white if sideChosen == WHITE_ID and black otherwise.
+     */
+    public void relayForfeit(int sideChosen)
+    {
+        game.loseGame(sideChosen);
+    }
+
+    /**
+     * Get the icon of a piece situated at the position of square.
+     * @param square A square on the game board.
+     * @return The icon of the piece at square.
+     */
     public String getText(BoardSquare square)
     {
         Board gameBoard = game.getChessBoard();
@@ -47,6 +90,16 @@ public class BoardController{
 
     }
 
+    public int getWhiteScore()
+    {
+        return game.getWhiteScore();
+    }
+
+    public int getBlackScore()
+    {
+        return game.getBlackScore();
+    }
+
     public void setPlayerNames(List<String> playerNames)
     {
         game.setPlayerNames(playerNames);
@@ -59,12 +112,12 @@ public class BoardController{
             Game aGame = new Game(true);
             BoardController boardController = new BoardController(aGame);
             Board gameBoard = aGame.getChessBoard();
-            BoardView boardUI = new BoardView(gameBoard.getWidth(), gameBoard.getLength(), boardController);
+            BoardView boardView = new BoardView(gameBoard.getWidth(), gameBoard.getLength(), boardController);
 
-            aGame.setBoardView(boardUI);
-            boardController.addListeners(boardUI);
+            aGame.setBoardView(boardView);
+            boardController.addListeners(boardView);
 
-            boardUI.displayGame();;
+            boardView.displayGame();;
 
         };
 
@@ -72,11 +125,4 @@ public class BoardController{
     }
 
 
-//    public BoardSquare[][] getChessBoardBoardSquares() {
-//        return chessBoardBoardSquares;
-//    }
-//
-//    public void setChessBoardBoardSquares(BoardSquare[][] chessBoardBoardSquares) {
-//        this.chessBoardBoardSquares = chessBoardBoardSquares;
-//    }
 }

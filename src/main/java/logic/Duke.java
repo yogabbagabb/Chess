@@ -8,7 +8,7 @@ public class Duke extends Piece {
         super(position, playerID, new ArrayList<>
                 (List.of(
                         MOVE_PATTERN.UNRESTRICTED_NORTH,MOVE_PATTERN.UNRESTRICTED_SOUTH,
-                        MOVE_PATTERN.RANDOM_EAST, MOVE_PATTERN.RANDOM_WEST)), "");
+                        MOVE_PATTERN.RANDOM_EAST, MOVE_PATTERN.RANDOM_WEST)), playerID==0? WHITE_DUKE: BLACK_DUKE);
     }
 }
 
