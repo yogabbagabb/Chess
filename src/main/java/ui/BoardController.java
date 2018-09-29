@@ -39,16 +39,27 @@ public class BoardController{
             }
         });
 
+        boardView.addRestartListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Rebuild an exact instance of the game but start the scores from 0-0
+                relayRenewalChoice(true, false);
+                game.updateScore();
+            }
+        });
+
 
     }
 
-    public void relayRenewalChoice(boolean renew)
+    public void relayRenewalChoice(boolean renew, boolean useOldScores)
     {
         if (renew == true)
         {
             Game oldGame = this.game;
             boolean addNewPieces = !oldGame.isStandardGame();
-            Game aGame = new Game (oldGame.isWhiteBelow(), addNewPieces, oldGame.getWhiteScore(), oldGame.getBlackScore());
+            int whiteScore = useOldScores? oldGame.getWhiteScore(): 0;
+            int blackScore = useOldScores? oldGame.getBlackScore(): 0;
+            Game aGame = new Game (oldGame.isWhiteBelow(), addNewPieces, whiteScore, blackScore);
             this.game = aGame;
 
             aGame.setOldBoardView(oldGame);

@@ -863,6 +863,11 @@ public class Game {
         boardView.confirmForfeitChoice();
     }
 
+    public void updateScore()
+    {
+        boardView.updateScore();
+    }
+
     /**
      * Cause a side to lose the game.
      * @param sideToLose The side that will lose the game.

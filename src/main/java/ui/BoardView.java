@@ -29,6 +29,7 @@ public class BoardView {
     private JButton deselectButton;
     private JButton undoButton;
     private JButton forfeitButton;
+    private JButton restartButton;
     private JLabel turnLabel;
 
     //Score Label
@@ -95,7 +96,6 @@ public class BoardView {
 
     public void confirmForfeitChoice()
     {
-        // TODO: This might have been fucked up
        int optionChosen = JOptionPane.showOptionDialog(frame, "Who wants to lose the game: Black or White?", "Forfeit", JOptionPane.YES_NO_OPTION,
                JOptionPane.QUESTION_MESSAGE, null, new String [] {"White", "Black"}, null);
 
@@ -125,7 +125,7 @@ public class BoardView {
                 JOptionPane.QUESTION_MESSAGE, null, null, null);
 
         int yesOption = 0;
-        boardController.relayRenewalChoice(optionChosen == yesOption? true: false);
+        boardController.relayRenewalChoice(optionChosen == yesOption? true: false, true);
     }
 
     public void changePlayer(int currentPlayerID)
@@ -168,6 +168,11 @@ public class BoardView {
         forfeitButton.addActionListener(actionListener);
     }
 
+    public void addRestartListener(ActionListener actionListener)
+    {
+        restartButton.addActionListener(actionListener);
+    }
+
 
 
     public JFrame getFrame()
@@ -207,6 +212,11 @@ public class BoardView {
         forfeitButton = new JButton("Forfeit");
 
         options.add(forfeitButton);
+        options.addSeparator();
+
+        restartButton = new JButton("Restart");
+
+        options.add(restartButton);
         options.addSeparator();
 
         turnLabel = new JLabel("Turn: White");
