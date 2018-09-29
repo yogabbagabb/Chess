@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 public class BoardController{
 
     private Game game;
-    private BoardSquare [][] chessBoardBoardSquares;
+//    private BoardSquare [][] chessBoardBoardSquares;
 
     public BoardController(Game game)
     {
@@ -25,12 +25,7 @@ public class BoardController{
             game.showInterestInPos(square.getPosX(), square.getPosY());
         });
 
-        boardView.addDropPieceListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        boardView.addDropPieceListener(e -> game.dropPiece());
 
     }
 
@@ -71,11 +66,11 @@ public class BoardController{
     }
 
 
-    public BoardSquare[][] getChessBoardBoardSquares() {
-        return chessBoardBoardSquares;
-    }
-
-    public void setChessBoardBoardSquares(BoardSquare[][] chessBoardBoardSquares) {
-        this.chessBoardBoardSquares = chessBoardBoardSquares;
-    }
+//    public BoardSquare[][] getChessBoardBoardSquares() {
+//        return chessBoardBoardSquares;
+//    }
+//
+//    public void setChessBoardBoardSquares(BoardSquare[][] chessBoardBoardSquares) {
+//        this.chessBoardBoardSquares = chessBoardBoardSquares;
+//    }
 }

@@ -760,6 +760,23 @@ public class Game {
 
     }
 
+    /**
+     * Stop taking interest in the piece last selected and change back the color of all pieces on the board.
+     */
+    public void dropPiece()
+    {
+        currentPiece = null;
+        Set <Square> boardSquareSet = new LinkedHashSet<>();
+        for (int posX = 0; posX < chessBoard.getWidth(); ++posX)
+        {
+            for (int posY = 0; posY < chessBoard.getLength(); ++posY)
+            {
+                boardSquareSet.add(Square.getCoordinate(posX,posY));
+            }
+        }
+        boardView.restoreOriginalColors(boardSquareSet);
+    }
+
 
 
     /**

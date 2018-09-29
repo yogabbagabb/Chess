@@ -35,7 +35,6 @@ public class BoardView {
         chessBoardLength = length;
         chessBoardBoardSquares = new BoardSquare[chessBoardWidth][chessBoardLength];
         this.boardController = boardController;
-        boardController.setChessBoardBoardSquares(chessBoardBoardSquares);
 
         initializeFrame();
         initializeOptions();
