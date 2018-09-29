@@ -48,7 +48,7 @@ public class BoardController{
         {
             Game oldGame = this.game;
             boolean addNewPieces = !oldGame.isStandardGame();
-            Game aGame = new Game (true, addNewPieces, oldGame.getWhiteScore(), oldGame.getBlackScore());
+            Game aGame = new Game (oldGame.isWhiteBelow(), addNewPieces, oldGame.getWhiteScore(), oldGame.getBlackScore());
             this.game = aGame;
 
             aGame.setOldBoardView(oldGame);
@@ -113,9 +113,13 @@ public class BoardController{
 
             int optionChosen = JOptionPane.showOptionDialog(null, "What type of game do you want to play?", "Game Selection",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String [] {"Regular Game", "Aahan's Game"}, null);
+            int orientationOption = JOptionPane.showOptionDialog(null, "Would you like white to be at " +
+                            "the bottom of the board, or the top?", "Orientation Selection",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String [] {"Bottom", "Top"}, null);
 
             boolean augmentedGame = optionChosen == 1? true: false;
-            Game aGame = new Game(true, augmentedGame);
+            boolean whiteBelow = orientationOption == 0? true: false;
+            Game aGame = new Game(whiteBelow, augmentedGame);
             BoardController boardController = new BoardController(aGame);
             Board gameBoard = aGame.getChessBoard();
             BoardView boardView = new BoardView(gameBoard.getWidth(), gameBoard.getLength(), boardController);

@@ -21,39 +21,49 @@ public class Game {
     static final int WHITE_ID = 0;
     static final int BLACK_ID = 1;
     private boolean standardGame;
+    private boolean whiteBelow;
     private int currentPlayerID;
     private Piece currentPiece;
     private BoardView boardView;
 
-    public Game (boolean whitebelow, boolean addNewPieces, int whiteScore, int blackScore)
+    public Game (boolean whiteBelow, boolean addNewPieces, int whiteScore, int blackScore)
     {
-       this(whitebelow, addNewPieces);
+       this(whiteBelow, addNewPieces);
        this.whiteScore = whiteScore;
        this.blackScore = blackScore;
     }
     public Game(boolean whiteBelow)
     {
-        initializeStandardBoard(whiteBelow);
+        this.whiteBelow = whiteBelow;
         standardGame = true;
+        initializeStandardBoard(whiteBelow);
     }
     public Game(boolean whiteBelow, boolean addNewPieces)
     {
-        initializeStandardBoard(whiteBelow);
+        this.whiteBelow = whiteBelow;
         standardGame = !addNewPieces;
-        int bottomPlayerID = 0;
-        int topPlayerID;
+        initializeStandardBoard(whiteBelow);
 
         // Set the ID of the bottom player to 0 if white is the side at the bottom of the board.
-        bottomPlayerID = whiteBelow? 0 : 1;
-        topPlayerID = bottomPlayerID == 0? 1: 0;
 
         if (addNewPieces)
         {
-            int [] playerIDs = {bottomPlayerID, topPlayerID};
+            int [] playerIDs = {0,1};
             // Initialize the arrays such that xPiecePos X yPiecePos (in a set theoretic manner) gives us the new positions
             // being added to
             int [] xPiecePos = {0,7};
-            int [] yPiecePos = {2, 5};
+            int [] yPiecePos = new int [2];
+            if (whiteBelow)
+            {
+                yPiecePos[0] = 2;
+                yPiecePos[1] = 5;
+            }
+            else
+            {
+                yPiecePos[1] = 2;
+                yPiecePos[0] = 5;
+            }
+
             List <Player> playerList = getPlayers();
             Player [] playerArray = {playerList.get(0), playerList.get(1)};
             Piece aPiece;
@@ -104,26 +114,37 @@ public class Game {
         List <Piece> playerOnePieces;
         List <Piece> playerTwoPieces;
 
-        int bottomPlayerID;
-        int topPlayerID;
-        if (whiteBelow)
-        {
-            bottomPlayerID = 0;
-            topPlayerID = 1;
-        }
-        else
-        {
-            bottomPlayerID = 1;
-            topPlayerID = 0;
-        }
 
         Piece [][] piecePositions = new Piece[8][8];
 
-        int [] secondaryPieceIdx = {0,7};
-        int [] PawnIdx = {1, 6};
-        int [] playerIDs = {bottomPlayerID, topPlayerID};
-        Player [] playerArray = {new Player (bottomPlayerID), new Player (topPlayerID)};
-        boolean north = true;
+        int [] secondaryPieceIdx = new int [2];
+        if (whiteBelow)
+        {
+            secondaryPieceIdx[0] = 0;
+            secondaryPieceIdx[1] = 7;
+        }
+        else
+        {
+            secondaryPieceIdx[1] = 0;
+            secondaryPieceIdx[0] = 7;
+        }
+
+        int [] PawnIdx = new int [2];
+        if (whiteBelow)
+        {
+            PawnIdx[0] = 1;
+            PawnIdx[1] = 6;
+        }
+        else
+        {
+            PawnIdx[1] = 1;
+            PawnIdx[0] = 6;
+        }
+
+        int [] playerIDs = {0,1};
+
+        Player [] playerArray = {new Player (0), new Player (1)};
+        boolean north = whiteBelow? true : false;
         boolean [] pawnDir = {north, !north};
 
         List <Piece> currentPiecesList = new ArrayList <> ();
@@ -1020,6 +1041,10 @@ public class Game {
 
     public boolean isStandardGame() {
         return standardGame;
+    }
+
+    public boolean isWhiteBelow() {
+        return whiteBelow;
     }
 }
 
