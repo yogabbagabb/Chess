@@ -47,7 +47,8 @@ public class BoardController{
         if (renew == true)
         {
             Game oldGame = this.game;
-            Game aGame = new Game (true, false, oldGame.getWhiteScore(), oldGame.getBlackScore());
+            boolean addNewPieces = !oldGame.isStandardGame();
+            Game aGame = new Game (true, addNewPieces, oldGame.getWhiteScore(), oldGame.getBlackScore());
             this.game = aGame;
 
             aGame.setOldBoardView(oldGame);

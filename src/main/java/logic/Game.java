@@ -20,6 +20,7 @@ public class Game {
     static final int PARITY = 4;
     static final int WHITE_ID = 0;
     static final int BLACK_ID = 1;
+    private boolean standardGame;
     private int currentPlayerID;
     private Piece currentPiece;
     private BoardView boardView;
@@ -33,10 +34,12 @@ public class Game {
     public Game(boolean whiteBelow)
     {
         initializeStandardBoard(whiteBelow);
+        standardGame = true;
     }
     public Game(boolean whiteBelow, boolean addNewPieces)
     {
         initializeStandardBoard(whiteBelow);
+        standardGame = !addNewPieces;
         int bottomPlayerID = 0;
         int topPlayerID;
 
@@ -1013,6 +1016,10 @@ public class Game {
 
     public int getWhiteScore() {
         return whiteScore;
+    }
+
+    public boolean isStandardGame() {
+        return standardGame;
     }
 }
 
