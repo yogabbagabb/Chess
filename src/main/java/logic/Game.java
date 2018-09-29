@@ -231,6 +231,19 @@ public class Game {
 
 
     /**
+     * Move a piece to a new location with the intent of reverting the piece to its location at some point later.
+     * @param aPiece The piece that will be moved; we assume it exists on the board.
+     * @param newPosition The new position where aPiece will be moved to; we assume it is a valid position.
+     *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
+     *                    we assume it is an enemy.
+     */
+    private void movePieceConditionally(Piece aPiece, Square newPosition)
+    {
+        Piece formerCurrentPiece = currentPiece;
+        movePiece(aPiece, newPosition);
+        resetTurnStats(formerCurrentPiece);
+    }
+    /**
      * @param aPiece The piece that will be moved; we assume it exists on the board.
      * @param newPosition The new position where aPiece will be moved to; we assume it is a valid position.
      *                    Move an existent piece to a legal position. Kill the piece originally at the new position;
@@ -661,11 +674,11 @@ public class Game {
     }
 
 
-    private static int EMPTY_SQUARE = 0;
-    private static int WRONG_OWNER = 1;
-    private static int VALID_SELECTION = 2;
-    private static int VALID_MOVE = 3;
-    private static int INACCESSIBLE = 4;
+    public static int EMPTY_SQUARE = 0;
+    public static int WRONG_OWNER = 1;
+    public static int VALID_SELECTION = 2;
+    public static int VALID_MOVE = 3;
+    public static int INACCESSIBLE = 4;
     /**
      * Take interest in a position, after determining if the position is somehow accessible in the current
      * state of the game. "Accessibility" is positive if one of the following is true: the current piece can
@@ -706,14 +719,14 @@ public class Game {
         }
         else
         {
-            Piece pieceAtPos = chessBoard.getPieceAtPosition(xPos, yPos);
-            Player playerOfPiece = players.get(pieceAtPos.getPlayerID());
-            Set<Square> safeSquares = getSafePieceMoves(pieceAtPos, playerOfPiece);
+//            Piece pieceAtPos = chessBoard.getPieceAtPosition(xPos, yPos);
+            Player playerOfPiece = players.get(currentPiece.getPlayerID());
+            Set<Square> safeSquares = getSafePieceMoves(currentPiece, playerOfPiece);
 
             // The square is accessible by the current player
             if (safeSquares.contains(Square.getCoordinate(xPos, yPos)))
             {
-                movePiece(pieceAtPos, Square.getCoordinate(xPos, yPos));
+                movePiece(currentPiece, Square.getCoordinate(xPos, yPos));
                 // TODO: Update the view with information that some chess squares must change their text.
                 return VALID_MOVE;
             }
@@ -727,6 +740,7 @@ public class Game {
         }
 
     }
+
 
 
     /**
@@ -756,32 +770,30 @@ public class Game {
             {
                 // If we enter here, then the piece belongs to an opponent.
                 // Remove our oppponent's piece temporarily
-                deletePiece(pieceAtMoveLoc, possibleMove);
-                movePiece(aPiece, possibleMove);
-                Piece formerCurrentPiece = currentPiece;
-                resetTurnStats(formerCurrentPiece);
+
+                // I am leaving this here for fear that it might actually be useful
+//                deletePiece(pieceAtMoveLoc, possibleMove);
+                movePieceConditionally(aPiece, possibleMove);
 
                 if (isChecked(aPlayer))
                 {
                     iterator.remove();
                 }
 
-                movePiece(aPiece, oldLoc);
-                formerCurrentPiece = currentPiece;
-                resetTurnStats(formerCurrentPiece);
+                movePieceConditionally(aPiece, oldLoc);
                 // Add back our opponent's piece
                 putPieceOnBoard(possibleMove.getPosX(), possibleMove.getPosY(), pieceAtMoveLoc);
             }
             else
             {
-                movePiece(aPiece, possibleMove);
+                movePieceConditionally(aPiece, possibleMove);
 
                 if (isChecked(aPlayer))
                 {
                     iterator.remove();
                 }
 
-                movePiece(aPiece, oldLoc);
+                movePieceConditionally(aPiece, oldLoc);
             }
 
 

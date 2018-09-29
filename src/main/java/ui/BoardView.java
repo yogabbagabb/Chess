@@ -5,6 +5,7 @@ import logic.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class BoardView {
     private JFrame frame;
@@ -15,8 +16,6 @@ public class BoardView {
     private BoardSquare[][] chessBoardBoardSquares;
     private final Color JADE = new Color(51, 153, 102);
     private final Color MANILA = new Color(255, 255, 179);
-    private final Color[] boardColors = {JADE, MANILA};
-    private final int numBoardColors = boardColors.length;
 
     static final int FONT_SIZE = 60;
     static final Font WRITING_FONT = new Font("Lucida Grande", Font.PLAIN, FONT_SIZE);
@@ -35,6 +34,15 @@ public class BoardView {
         initializeOptions();
         initializeBoard();
         addTopComponents();
+    }
+
+    public void addSquareListeners(ActionListener actionListener)
+    {
+        for (int verCounter = chessBoardLength-1; verCounter >= 0; --verCounter) {
+            for (int horCounter = 0; horCounter < chessBoardWidth; ++horCounter) {
+                chessBoardBoardSquares[horCounter][verCounter].addActionListener(actionListener);
+            }
+        }
     }
 
     public JFrame getFrame()
@@ -74,6 +82,12 @@ public class BoardView {
         optionsPanel.add(options);
     }
 
+    private Color getStandardColor(int horCounter, int verCounter)
+    {
+        Color colorToChoose = ((horCounter + verCounter) % 2 == 0? JADE: MANILA);
+        return colorToChoose;
+    }
+
     /**
      * Set up the board panel.
      */
@@ -88,11 +102,8 @@ public class BoardView {
         {
             for (int horCounter = 0; horCounter < chessBoardWidth; ++horCounter)
             {
-                // Choose the leftmost color of row vertCounter, by choosing the offset in array
-                int offsetFirstColor = verCounter % 2;
                 BoardSquare square = new BoardSquare (horCounter, verCounter);
-                int colorIndex = (offsetFirstColor + horCounter) % 2;
-                square.setBackground(boardColors[colorIndex]);
+                square.setBackground(getStandardColor(horCounter, verCounter));
                 square.setOpaque(true);
                 square.setBorderPainted(false);
                 square.setEnabled(true);
