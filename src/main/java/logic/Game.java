@@ -11,6 +11,7 @@ import java.util.*;
 public class Game {
 
     private List <Player> players;
+    private List <String> playerNames;
     private Board chessBoard;
     private int numPlayers;
     private int turnParity;
@@ -746,6 +747,7 @@ public class Game {
                 boardView.restoreOriginalColors(safeSquares);
                 boardView.restoreOriginalColors(new LinkedHashSet<>(Arrays.asList(currentSquare)));
                 boardView.changePlayer(currentPlayerID);
+                checkForEndStates();
                 return VALID_MOVE;
             }
 
@@ -760,6 +762,37 @@ public class Game {
 
     }
 
+    private void checkForEndStates()
+    {
+        Player currentPlayer = players.get(currentPlayerID);
+        int whiteID = 0;
+        String colorOfCurrentPlayer =  currentPlayerID == whiteID? "White" : "Black";
+        String endStateString = "Player with " + colorOfCurrentPlayer + "pieces: ";
+        boolean endStateDetected = false;
+
+        if(isCheckmated(currentPlayer))
+        {
+            endStateDetected = true;
+            endStateString += "You're checkmated!";
+        }
+        else if(isStalemated(currentPlayer))
+        {
+            endStateDetected = true;
+            endStateString += "You're stalemated";
+        }
+        else if(isChecked(currentPlayer))
+        {
+            endStateDetected = true;
+            endStateString += "You're checked";
+        }
+
+
+        if  (endStateDetected)
+        {
+            boardView.showEndStateDialog(endStateString);
+        }
+
+    }
     /**
      * Stop taking interest in the piece last selected and change back the color of all pieces on the board.
      */
@@ -916,6 +949,14 @@ public class Game {
 
     public void setBoardView(BoardView boardView) {
         this.boardView = boardView;
+    }
+
+    public List<String> getPlayerNames() {
+        return playerNames;
+    }
+
+    public void setPlayerNames(List<String> playerNames) {
+        this.playerNames = playerNames;
     }
 }
 

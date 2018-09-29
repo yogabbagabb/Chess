@@ -6,6 +6,7 @@ import logic.Square;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Set;
 
 public class BoardView {
@@ -95,6 +96,11 @@ public class BoardView {
         JOptionPane.showMessageDialog(frame, "Illegal move mate.");
     }
 
+    public void showEndStateDialog(String endStateString)
+    {
+        JOptionPane.showMessageDialog(frame, endStateString);
+    }
+
     public void changePlayer(int currentPlayerID)
     {
         int whiteID = 0;
@@ -141,6 +147,7 @@ public class BoardView {
         optionsPanel = new JPanel();
 //        optionsPanel.setLayout(new BoxLayout (optionsPanel, BoxLayout.LINE_AXIS));
         JToolBar options = new JToolBar();
+        // Make the tool bar fixed
         options.setFloatable(false);
         deselectButton = new JButton("Deselect Piece");
         options.add(deselectButton);
@@ -156,6 +163,17 @@ public class BoardView {
 
         turnLabel = new JLabel("Turn: White");
         options.add(turnLabel);
+        options.addSeparator();
+
+        String whiteName = JOptionPane.showInputDialog("White: Please give me your name");
+        String blackName = JOptionPane.showInputDialog("Black: Please give me your name");
+        boardController.setPlayerNames(List.of(whiteName, blackName));
+        int distanceApart = 15;
+        int height = 0;
+        options.addSeparator(new Dimension(distanceApart, height));
+        options.add(new JLabel("White: " + whiteName));
+        options.addSeparator();
+        options.add(new JLabel("Black: " + blackName));
 
         optionsPanel.add(options);
     }

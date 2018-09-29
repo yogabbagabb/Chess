@@ -7,6 +7,7 @@ import logic.Piece;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class BoardController{
 
@@ -44,6 +45,11 @@ public class BoardController{
         }
         return squareText;
 
+    }
+
+    public void setPlayerNames(List<String> playerNames)
+    {
+        game.setPlayerNames(playerNames);
     }
 
 
