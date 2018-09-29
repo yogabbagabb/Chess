@@ -254,9 +254,25 @@ public class Game {
      */
     private void resetTurnParity()
     {
-        int movesMade = 1;
-        turnParity -= movesMade;
-        turnParity %= PARITY;
+//        int movesMade = 1;
+        if (turnParity == 0)
+        {
+            turnParity = 3;
+        }
+        else if (turnParity == 1)
+        {
+            turnParity = 0;
+        }
+        else if (turnParity == 2)
+        {
+            turnParity = 1;
+        }
+        else if (turnParity == 3)
+        {
+            turnParity = 2;
+        }
+//        turnParity -= movesMade;
+//        turnParity %= PARITY;
     }
 
     private void resetPlayer()
