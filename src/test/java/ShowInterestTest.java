@@ -1,5 +1,7 @@
 import junit.framework.TestCase;
 import logic.*;
+import ui.BoardController;
+import ui.BoardView;
 
 import java.util.List;
 
@@ -7,6 +9,8 @@ public class ShowInterestTest extends TestCase {
 
     Game gameInstance;
     Board board;
+    BoardView boardView;
+    BoardController boardController;
     List<Player> players;
     boolean whiteBelow;
 
@@ -18,8 +22,13 @@ public class ShowInterestTest extends TestCase {
     public void setUpBoard() {
         whiteBelow = true;
         gameInstance = new Game(whiteBelow);
+        boardController = new BoardController(gameInstance);
+
         board = gameInstance.getChessBoard();
+        boardView = new BoardView(board.getWidth(), board.getLength(), boardController);
+
         players = gameInstance.getPlayers();
+        gameInstance.setBoardView(boardView);
     }
 
 //    public void testNothing()

@@ -1,11 +1,12 @@
 package ui;
 
 
-import logic.Game;
+import logic.Square;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 public class BoardView {
     private JFrame frame;
@@ -16,11 +17,17 @@ public class BoardView {
     private BoardSquare[][] chessBoardBoardSquares;
     private final Color JADE = new Color(51, 153, 102);
     private final Color MANILA = new Color(255, 255, 179);
+    private final Color NAVY = new Color(89, 66, 244);
 
     static final int FONT_SIZE = 60;
     static final Font WRITING_FONT = new Font("Lucida Grande", Font.PLAIN, FONT_SIZE);
     private BoardController boardController;
 
+    //optionsPanelPieces
+    private JButton deselectButton;
+    private JButton undoButton;
+    private JButton forfeitButton;
+    private JLabel turnLabel;
 
     public BoardView(int width, int length, BoardController boardController)
     {
@@ -36,6 +43,67 @@ public class BoardView {
         addTopComponents();
     }
 
+    public void highlightChosenPiece(Square square)
+    {
+        BoardSquare squareButton = chessBoardBoardSquares[square.getPosX()][square.getPosY()];
+        squareButton.setBackground(NAVY);
+        squareButton.repaint();
+
+    }
+
+    public void highlightSquares(Set<Square> boardSquareList)
+    {
+        for (Square square : boardSquareList)
+        {
+            BoardSquare squareButton = chessBoardBoardSquares[square.getPosX()][square.getPosY()];
+            squareButton.setBackground(Color.WHITE);
+            squareButton.setBorderPainted(true);
+            squareButton.repaint();
+        }
+
+    }
+
+    public void updatePiecesOnSquares(Set <Square> boardSquareList)
+    {
+        for (Square square : boardSquareList)
+        {
+            BoardSquare squareButton = chessBoardBoardSquares[square.getPosX()][square.getPosY()];
+            squareButton.setText(boardController.getText(squareButton));
+            squareButton.repaint();
+        }
+
+    }
+
+    public void restoreOriginalColors(Set<Square> boardSquareList)
+    {
+        for (Square square : boardSquareList)
+        {
+            BoardSquare squareButton = chessBoardBoardSquares[square.getPosX()][square.getPosY()];
+            restoreBoardColor(squareButton);
+            squareButton.setBorderPainted(false);
+            squareButton.repaint();
+        }
+
+    }
+
+    public void showWrongPlayerDialog()
+    {
+        JOptionPane.showMessageDialog(frame, "That's not your piece dumbass.");
+    }
+
+    public void showIllegalMoveDialog()
+    {
+        JOptionPane.showMessageDialog(frame, "Illegal move mate.");
+    }
+
+    public void changePlayer(int currentPlayerID)
+    {
+        int whiteID = 0;
+        String colorOfTurn = currentPlayerID == whiteID? "White" : "Black";
+        turnLabel.setText("Turn: " + colorOfTurn);
+        turnLabel.repaint();
+    }
+
     public void addSquareListeners(ActionListener actionListener)
     {
         for (int verCounter = chessBoardLength-1; verCounter >= 0; --verCounter) {
@@ -43,6 +111,11 @@ public class BoardView {
                 chessBoardBoardSquares[horCounter][verCounter].addActionListener(actionListener);
             }
         }
+    }
+
+    public void addDropPieceListener(ActionListener actionListener)
+    {
+        deselectButton.addActionListener(actionListener);
     }
 
     public JFrame getFrame()
@@ -70,18 +143,28 @@ public class BoardView {
 //        optionsPanel.setLayout(new BoxLayout (optionsPanel, BoxLayout.LINE_AXIS));
         JToolBar options = new JToolBar();
         options.setFloatable(false);
-        options.add(new JButton ("Deselect Piece"));
+        deselectButton = new JButton("Deselect Piece");
+        options.add(deselectButton);
         options.addSeparator();
-        options.add(new JButton ("Move Back"));
+
+        undoButton = new JButton("Undo");
+        options.add(undoButton);
         options.addSeparator();
-        options.add(new JButton ("Forfeit"));
+
+        forfeitButton = new JButton("Forfeit");
+        options.add(forfeitButton);
         options.addSeparator();
-        options.add(new JButton ("Skip Turn"));
-        options.addSeparator();
-        options.add(new JLabel ("Turn: White"));
+
+        turnLabel = new JLabel("Turn: White");
+        options.add(turnLabel);
+
         optionsPanel.add(options);
     }
 
+    private void restoreBoardColor(BoardSquare boardSquare)
+    {
+        boardSquare.setBackground(getStandardColor(boardSquare.getPosX(), boardSquare.getPosY()));
+    }
     private Color getStandardColor(int horCounter, int verCounter)
     {
         Color colorToChoose = ((horCounter + verCounter) % 2 == 0? JADE: MANILA);
@@ -110,7 +193,6 @@ public class BoardView {
                 square.setText(boardController.getText(square));
                 square.setFont(WRITING_FONT);
                 square.setActionCommand(Integer.toString(horCounter) + "," + Integer.toString(verCounter));
-                square.addActionListener(boardController);
 //                Font buttonFont = square.getFont();
 //                System.out.println(buttonFont.getName());
 //                square.setText("\u265A");

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class BoardController implements ActionListener {
+public class BoardController{
 
     private Game game;
     private BoardSquare [][] chessBoardBoardSquares;
@@ -16,6 +16,22 @@ public class BoardController implements ActionListener {
     public BoardController(Game game)
     {
         this.game = game;
+    }
+
+    public void addListeners(BoardView boardView)
+    {
+        boardView.addSquareListeners(e -> {
+            BoardSquare square = (BoardSquare)e.getSource();
+            game.showInterestInPos(square.getPosX(), square.getPosY());
+        });
+
+        boardView.addDropPieceListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
     }
 
     public String getText(BoardSquare square)
@@ -43,6 +59,10 @@ public class BoardController implements ActionListener {
             BoardController boardController = new BoardController(aGame);
             Board gameBoard = aGame.getChessBoard();
             BoardView boardUI = new BoardView(gameBoard.getWidth(), gameBoard.getLength(), boardController);
+
+            aGame.setBoardView(boardUI);
+            boardController.addListeners(boardUI);
+
             boardUI.displayGame();;
 
         };
@@ -50,12 +70,6 @@ public class BoardController implements ActionListener {
         SwingUtilities.invokeLater(r);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Hit");
-        System.out.println(e.getActionCommand());
-
-    }
 
     public BoardSquare[][] getChessBoardBoardSquares() {
         return chessBoardBoardSquares;

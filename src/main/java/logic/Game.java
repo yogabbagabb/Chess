@@ -1,5 +1,7 @@
 package logic;
 
+import ui.BoardView;
+
 import java.util.*;
 
 
@@ -15,6 +17,7 @@ public class Game {
     static final int PARITY = 4;
     private int currentPlayerID;
     private Piece currentPiece;
+    private BoardView boardView;
 
     public Game(boolean whiteBelow)
     {
@@ -705,14 +708,20 @@ public class Game {
             else if(pieceAtPosition.getPlayerID() != currentPlayerID)
             {
                // TODO: Create a dialog telling the current player that the piece isn't his
+                boardView.showWrongPlayerDialog();
                 return WRONG_OWNER;
             }
 
             else
             {
-                // Set the current piece to be the one at the position
+                // Set the current piece to be the one at the passed in position.
                 currentPiece = pieceAtPosition;
                 // TODO: Update the view with those squares that are accessible from the current piece.
+                Player playerOfPiece = players.get(currentPiece.getPlayerID());
+                Set<Square> safeSquares = getSafePieceMoves(currentPiece, playerOfPiece);
+                // Highlight those squares that we can reach and the current square that we are located at.
+                boardView.highlightSquares(safeSquares);
+                boardView.highlightChosenPiece(currentPiece.getPosition());
                 return VALID_SELECTION;
             }
 
@@ -726,14 +735,24 @@ public class Game {
             // The square is accessible by the current player
             if (safeSquares.contains(Square.getCoordinate(xPos, yPos)))
             {
+                Square currentSquare = currentPiece.getPosition();
                 movePiece(currentPiece, Square.getCoordinate(xPos, yPos));
-                // TODO: Update the view with information that some chess squares must change their text.
+
+                // Make an array consisting of the square moved from and the squared moved to.
+                final Square[] changedSquares = {currentSquare, Square.getCoordinate(xPos, yPos)};
+                // The latter array consists of only those squares whose pieces changed. Change them.
+                boardView.updatePiecesOnSquares(new LinkedHashSet<>(Arrays.asList(changedSquares)));
+                // Revert the colors of potential squares and the starting square to their original colors
+                boardView.restoreOriginalColors(safeSquares);
+                boardView.restoreOriginalColors(new LinkedHashSet<>(Arrays.asList(currentSquare)));
+                boardView.changePlayer(currentPlayerID);
                 return VALID_MOVE;
             }
 
             else
             {
-                // TODO: Update the view with a message explaining that the position cannot be accessed.
+                // Issue a dialog saying that the move cannot be accessed
+                boardView.showIllegalMoveDialog();
                 return INACCESSIBLE;
             }
 
@@ -874,7 +893,13 @@ public class Game {
     }
 
 
+    public BoardView getBoardView() {
+        return boardView;
+    }
 
+    public void setBoardView(BoardView boardView) {
+        this.boardView = boardView;
+    }
 }
 
 
