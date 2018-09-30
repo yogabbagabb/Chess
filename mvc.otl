@@ -5,6 +5,19 @@ Things to Implement:
 	Add infrastructure to begin a new game with customization
 	Add infrastructure for ocmplete resetting
 
+How to implement restart
+
+	add a button
+	if it is hit
+
+How to implement undo
+	Whenever move piece is executed
+	add to the stack an object which is the former square, the piece, the next
+	square and the piece potentially removed from that square
+		Find some way of storing this
+	When a move is made push this onto the stack
+	Suppose a move is undone -- then push this off the stack
+
 
 		
 	

@@ -173,6 +173,11 @@ public class BoardView {
         restartButton.addActionListener(actionListener);
     }
 
+    public void addUndoListener(ActionListener actionListener)
+    {
+        undoButton.addActionListener(actionListener);
+    }
+
 
 
     public JFrame getFrame()

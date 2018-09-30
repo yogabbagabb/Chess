@@ -30,7 +30,7 @@ public class BoardController{
             game.showInterestInPos(square.getPosX(), square.getPosY());
         });
 
-        boardView.addDropPieceListener(e -> game.dropPiece());
+        boardView.addDropPieceListener(e -> game.recolorBoardSquares());
 
         boardView.addForfeitInitiationListener(new ActionListener() {
             @Override
@@ -45,6 +45,13 @@ public class BoardController{
                 // Rebuild an exact instance of the game but start the scores from 0-0
                 relayRenewalChoice(true, false);
                 game.updateScore();
+            }
+        });
+
+        boardView.addUndoListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.undoUpdateMove();
             }
         });
 

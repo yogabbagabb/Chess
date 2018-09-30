@@ -13,13 +13,13 @@ public class Game {
     private List <Player> players;
     private List <String> playerNames;
     private Board chessBoard;
+    private Stack<MoveRecord> moveHistory;
     private int whiteScore;
     private int blackScore;
     private int numPlayers;
     private int turnParity;
     static final int PARITY = 4;
     static final int WHITE_ID = 0;
-    static final int BLACK_ID = 1;
     private boolean standardGame;
     private boolean whiteBelow;
     private int currentPlayerID;
@@ -107,6 +107,7 @@ public class Game {
         turnParity = 0;
         whiteScore = 0;
         blackScore = 0;
+        moveHistory = new Stack<>();
 
         int boardLength = 8;
         int boardWidth = 8;
@@ -285,6 +286,18 @@ public class Game {
         return turnParity > 1;
     }
 
+    /**
+     * Move a piece and record in history that the piece was moved.
+     * @param aPiece aPiece The piece being moved
+     * @param newPosition newPosition The new position of the piece.
+     */
+    public void movePieceInGame(Piece aPiece, Square newPosition)
+    {
+        // This has to precede movePiece
+        recordMove(aPiece, aPiece.getPosition(), chessBoard.getPieceAtPosition(newPosition), newPosition);
+        movePiece(aPiece, newPosition);
+    }
+
 
     /**
      * Move a piece to a new location with the intent of reverting the piece to its location at some point later.
@@ -324,6 +337,76 @@ public class Game {
         aPiece.setPosition(newPosition);
         updateTurnStats();
     }
+
+    /**
+     * Add to the stack the record that the movingPiece at oldLocation supplated the supplantedPiece by moving
+     * to newLocation
+     * @param movingPiece The piece being moved.
+     * @param oldLocation The original location of the movingPiece.
+     * @param supplantedPiece The piece that was evicted -- if one does exist -- by consequence of movingPiece
+     * @param newLocation The location that the piece was evicted from
+     */
+    private void recordMove(Piece movingPiece, Square oldLocation, Piece supplantedPiece, Square newLocation)
+    {
+        moveHistory.add(new MoveRecord(movingPiece, oldLocation, supplantedPiece, newLocation));
+    }
+
+    public void undoUpdateMove()
+    {
+        undoMove();
+        boardView.resetBoard();
+        boardView.changePlayer(currentPlayerID);
+    }
+    /**
+     * Return the game to the state that it was at previously, just before the ongoing turn.
+     */
+    public void undoMove()
+    {
+        // Get the last move
+        if (moveHistory.isEmpty())
+        {
+            return;
+        }
+        MoveRecord lastMove = moveHistory.pop();
+
+        Piece movingPiece = lastMove.movingPiece;
+        Square oldLocation = lastMove.oldLocation;
+        Piece supplantedPiece = lastMove.supplantedPiece;
+        Square newLocation = lastMove.newLocation;
+
+        // The last move did not kill any piece, so just move back the last touched piece to its former location.
+        if (supplantedPiece == null)
+        {
+            vacateAndMove(movingPiece, oldLocation, newLocation);
+        }
+        // The last move did kill, so move back the last touched piece to its former location and add back the killed
+        // piece to the board
+        else
+        {
+            vacateAndMove(movingPiece, oldLocation, newLocation);
+            putPieceOnBoard(newLocation.getPosX(), newLocation.getPosY(), supplantedPiece);
+            supplantedPiece.setPosition(newLocation);
+        }
+
+        // Reset turnParity, currentPlayer and currentPiece
+        resetTurnParity();
+        resetPlayer();
+        currentPiece = null;
+    }
+
+    /**
+     * Vacate the old position and set the piece to be at the new position. Here, we assume that the new location
+     * is not occupied.
+     * @param movingPiece
+     * @param oldLocation
+     * @param newLocation
+     */
+    private void vacateAndMove(Piece movingPiece, Square oldLocation, Square newLocation) {
+        chessBoard.setPieceAtPosition(newLocation, null);
+        chessBoard.setPieceAtPosition(oldLocation, movingPiece);
+        movingPiece.setPosition(oldLocation);
+    }
+
 
     /**
      * @param aPiece The piece that will be removed; we assume it exists on the board.
@@ -789,7 +872,7 @@ public class Game {
             if (safeSquares.contains(Square.getCoordinate(xPos, yPos)))
             {
                 Square currentSquare = currentPiece.getPosition();
-                movePiece(currentPiece, Square.getCoordinate(xPos, yPos));
+                movePieceInGame(currentPiece, Square.getCoordinate(xPos, yPos));
 
                 // Make an array consisting of the square moved from and the squared moved to.
                 final Square[] changedSquares = {currentSquare, Square.getCoordinate(xPos, yPos)};
@@ -844,7 +927,7 @@ public class Game {
     /**
      * Stop taking interest in the piece last selected and change back the color of all pieces on the board.
      */
-    public void dropPiece()
+    public void recolorBoardSquares()
     {
         currentPiece = null;
         Set <Square> boardSquareSet = new LinkedHashSet<>();
@@ -1006,12 +1089,14 @@ public class Game {
             // Make a container to contain all possible moves that opponent(s) can take on with some piece
             List <Piece> playerInstPieces = playerInst.getPieces();
             Piece formerCurrentPiece = currentPiece;
+            // Simulate the turn statistics that an opponent would have if she goes after you
             updateTurnStats();
             for (Piece aPiece: playerInstPieces)
             {
                 // Add all possible moves for a particular opponent piece to our container
                accessibleCoor.addAll(getPieceMoves(aPiece, playerInst));
             }
+            // Reset the turn statistics to be what they were when you began
             resetTurnStats(formerCurrentPiece);
         }
 
@@ -1066,6 +1151,34 @@ public class Game {
 
     public boolean isWhiteBelow() {
         return whiteBelow;
+    }
+
+
+    public Piece getCurrentPiece() {
+        return currentPiece;
+    }
+    public int getCurrentPlayerID() {
+        return currentPlayerID;
+    }
+
+    public int getTurnParity()
+    {
+        return turnParity;
+    }
+}
+
+class MoveRecord
+{
+    public Piece movingPiece;
+    public Square oldLocation;
+    public Piece supplantedPiece;
+    public Square newLocation;
+
+    public MoveRecord(Piece movingPiece, Square oldLocation, Piece supplantedPiece, Square newLocation) {
+        this.movingPiece = movingPiece;
+        this.oldLocation = oldLocation;
+        this.supplantedPiece = supplantedPiece;
+        this.newLocation = newLocation;
     }
 }
 
