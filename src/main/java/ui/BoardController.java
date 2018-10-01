@@ -58,17 +58,27 @@ public class BoardController{
 
     }
 
+    /**
+     * Fulfill the wish of the client (user interacting with the GUI) to either play
+     * another game or stop playing games at the back end level. If the player wishes to continue playing,
+     * make a new game or else exit.
+     * @param renew
+     * @param useOldScores
+     */
     public void relayRenewalChoice(boolean renew, boolean useOldScores)
     {
         if (renew == true)
         {
             Game oldGame = this.game;
+            // Determine whether we were playing a nonstandard game
             boolean addNewPieces = !oldGame.isStandardGame();
             int whiteScore = useOldScores? oldGame.getWhiteScore(): 0;
             int blackScore = useOldScores? oldGame.getBlackScore(): 0;
             Game aGame = new Game (oldGame.isWhiteBelow(), addNewPieces, whiteScore, blackScore);
+            // Set the Game field of this to be the new game.
             this.game = aGame;
 
+            // Set the view of the new game to be that of the old game.
             aGame.setOldBoardView(oldGame);
             aGame.reset();
         }
@@ -95,6 +105,7 @@ public class BoardController{
     public String getText(BoardSquare square)
     {
         Board gameBoard = game.getChessBoard();
+        // Get the piece at the coordinate of the parameter square
         Piece pieceAtBoardSquare = gameBoard.getPieceAtPosition(square.getPosX(), square.getPosY());
         String squareText;
         if (pieceAtBoardSquare == null)
@@ -103,6 +114,7 @@ public class BoardController{
         }
         else
         {
+            // Get the piece's chess icon.
             squareText = pieceAtBoardSquare.getIconUnicodeString();
         }
         return squareText;

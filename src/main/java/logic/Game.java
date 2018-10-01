@@ -276,6 +276,9 @@ public class Game {
 //        turnParity %= PARITY;
     }
 
+    /**
+     * Switch the current player ID back to the last one.
+     */
     private void resetPlayer()
     {
         currentPlayerID = currentPlayerID == 0? 1: 0;
@@ -897,6 +900,9 @@ public class Game {
 
     }
 
+    /**
+     * Give a notification in the view that a game end state has been reached.
+     */
     private void checkForEndStates()
     {
         Player currentPlayer = players.get(currentPlayerID);
@@ -941,6 +947,9 @@ public class Game {
         boardView.restoreOriginalColors(boardSquareSet);
     }
 
+    /**
+     * Initiate dialogs confirming and clarifying an intent to forfeit.
+     */
     public void prepareToForfeit()
     {
         boardView.confirmForfeitChoice();
@@ -1123,9 +1132,15 @@ public class Game {
         this.boardView = oldGame.getBoardView();
     }
 
+    /**
+     * Completely reset the game to how it appeared
+     * in the beginning.
+     */
     public void reset()
     {
         boardView.resetBoard();
+        boardView.updateScore();
+        boardView.changePlayer(currentPlayerID);
     }
 
 

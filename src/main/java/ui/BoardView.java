@@ -51,6 +51,10 @@ public class BoardView {
         addTopComponents();
     }
 
+    /**
+     * Highlight the square of the piece that a player has chosen to work with during her turn.
+     * @param square The square on which the chosen piece is located.
+     */
     public void highlightChosenPiece(Square square)
     {
         BoardSquare squareButton = chessBoardBoardSquares[square.getPosX()][square.getPosY()];
@@ -59,6 +63,10 @@ public class BoardView {
 
     }
 
+    /**
+     * Highlight squares to indicate the locations that the chosen piece can access.
+     * @param boardSquareList A list of squares that the piece can access.
+     */
     public void highlightSquares(Set<Square> boardSquareList)
     {
         for (Square square : boardSquareList)
@@ -71,6 +79,10 @@ public class BoardView {
 
     }
 
+    /**
+     * Update the icons of a list of squares.
+     * @param boardSquareList The list of squares on which piece icons may have changed.
+     */
     public void updatePiecesOnSquares(Set <Square> boardSquareList)
     {
         for (Square square : boardSquareList)
@@ -82,6 +94,10 @@ public class BoardView {
 
     }
 
+    /**
+     * Restore the colors of squares to their original ones.
+     * @param boardSquareList A list of squares.
+     */
     public void restoreOriginalColors(Set<Square> boardSquareList)
     {
         for (Square square : boardSquareList)
@@ -94,6 +110,9 @@ public class BoardView {
 
     }
 
+    /**
+     * Query the user for information as to who wishes to forfeit.
+     */
     public void confirmForfeitChoice()
     {
        int optionChosen = JOptionPane.showOptionDialog(frame, "Who wants to lose the game: Black or White?", "Forfeit", JOptionPane.YES_NO_OPTION,
@@ -104,21 +123,34 @@ public class BoardView {
 
     }
 
+    /**
+     * Tell the current player that she is selecting a piece that is not his.
+     */
     public void showWrongPlayerDialog()
     {
         JOptionPane.showMessageDialog(frame, "That's not your piece dumbass.");
     }
 
+    /**
+     * Tell the current player that she is making an illegal move.
+     */
     public void showIllegalMoveDialog()
     {
         JOptionPane.showMessageDialog(frame, "Illegal move mate.");
     }
 
+    /**
+     *  Tell the user that they have either been checked, checkmated or stalemated.
+     * @param endStateString
+     */
     public void showEndStateDialog(String endStateString)
     {
         JOptionPane.showMessageDialog(frame, endStateString);
     }
 
+    /**
+     * Ask the user if they wish to play another game.
+     */
     public void showGameRenewalDialog()
     {
         int optionChosen = JOptionPane.showOptionDialog(frame, "Play another game?", "Player Again",JOptionPane.YES_NO_OPTION,
@@ -128,6 +160,10 @@ public class BoardView {
         boardController.relayRenewalChoice(optionChosen == yesOption? true: false, true);
     }
 
+    /**
+     * Update the tool bar display's current player field to the new player.
+     * @param currentPlayerID The ID of the current player (0 -- White and 1 -- Black)
+     */
     public void changePlayer(int currentPlayerID)
     {
         int whiteID = 0;
@@ -136,6 +172,10 @@ public class BoardView {
         turnLabel.repaint();
     }
 
+    /**
+     * Add event listeners to each of the pieces on the board.
+     * @param actionListener The listener each piece will register.
+     */
     public void addSquareListeners(ActionListener actionListener)
     {
         for (int verCounter = chessBoardLength-1; verCounter >= 0; --verCounter) {
@@ -145,6 +185,9 @@ public class BoardView {
         }
     }
 
+    /**
+     * Both update the pieces on all squares and repaint all squares to be what they were originally.
+     */
     public void resetBoard()
     {
         Set <Square> allSquareList = new LinkedHashSet<>();
@@ -158,21 +201,37 @@ public class BoardView {
         restoreOriginalColors(allSquareList);
     }
 
+    /**
+     * Add a listener to the deselect button.
+     * @param actionListener Listener to add.
+     */
     public void addDropPieceListener(ActionListener actionListener)
     {
         deselectButton.addActionListener(actionListener);
     }
 
+    /**
+     * Add a listener to the forfeit button.
+     * @param actionListener Listener to add.
+     */
     public void addForfeitInitiationListener(ActionListener actionListener)
     {
         forfeitButton.addActionListener(actionListener);
     }
 
+    /**
+     * Add a listener to the restart button.
+     * @param actionListener Listener to add.
+     */
     public void addRestartListener(ActionListener actionListener)
     {
         restartButton.addActionListener(actionListener);
     }
 
+    /**
+     * Add a listener to the undo button.
+     * @param actionListener Listener to add.
+     */
     public void addUndoListener(ActionListener actionListener)
     {
         undoButton.addActionListener(actionListener);
@@ -202,10 +261,10 @@ public class BoardView {
     private void initializeOptions()
     {
         optionsPanel = new JPanel();
-//        optionsPanel.setLayout(new BoxLayout (optionsPanel, BoxLayout.LINE_AXIS));
         JToolBar options = new JToolBar();
         // Make the tool bar fixed
         options.setFloatable(false);
+        // Add all the buttons onto our options panel
         deselectButton = new JButton("Deselect Piece");
         options.add(deselectButton);
         options.addSeparator();
@@ -230,6 +289,7 @@ public class BoardView {
         int height = 0;
         options.addSeparator(new Dimension(distanceApart, height));
 
+        // Set the player names on the UI and save them into the game
         String whiteName = JOptionPane.showInputDialog("White: Please give me your name");
         String blackName = JOptionPane.showInputDialog("Black: Please give me your name");
         boardController.setPlayerNames(List.of(whiteName, blackName));
@@ -249,10 +309,21 @@ public class BoardView {
         optionsPanel.add(options);
     }
 
+    /**
+     * Set the square to be its standard color.
+     * @param boardSquare The square whose color we wish to reset.
+     */
     private void restoreBoardColor(BoardSquare boardSquare)
     {
         boardSquare.setBackground(getStandardColor(boardSquare.getPosX(), boardSquare.getPosY()));
     }
+
+    /**
+     * Get the standard color of a square located at a certain position.
+     * @param horCounter The x coordinate of the position.
+     * @param verCounter The y coordinate of the position.
+     * @return The standard color.
+     */
     private Color getStandardColor(int horCounter, int verCounter)
     {
         Color colorToChoose = ((horCounter + verCounter) % 2 == 0? JADE: MANILA);

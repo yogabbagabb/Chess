@@ -86,11 +86,7 @@ public abstract class Piece {
     @Override
     public String toString() {
 
-        if (this == null)
-        {
-            return "X ";
-        }
-        else if (this instanceof Pawn)
+        if (this instanceof Pawn)
         {
             return "P ";
         }

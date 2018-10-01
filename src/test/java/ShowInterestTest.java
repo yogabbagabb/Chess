@@ -96,6 +96,10 @@ public class ShowInterestTest extends TestCase {
         assertTrue(gameInstance.isCheckmated(players.get(0)));
         assertFalse(gameInstance.isStalemated(players.get(0)));
         System.out.println(board);
+
+        gameInstance.recolorBoardSquares();
+        gameInstance.prepareToForfeit();
+        gameInstance.updateScore();
     }
 
 //    public void testScholarMate(){
