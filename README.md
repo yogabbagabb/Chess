@@ -1,4 +1,4 @@
-# fa18-cs242-assignment1
+# Chess
 
 You can play chess using this GUI.
 
